@@ -15,8 +15,10 @@ public class Main extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			VBox root = loader.load(new FileInputStream("src/application/BudgetAppView.fxml"));
-			Scene scene = new Scene(root,400,300);
+			
 			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			Scene scene = new Scene(root,400,300);
+			
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Budget Tracker");
 			primaryStage.show();
