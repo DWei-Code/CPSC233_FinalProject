@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="241.0" prefWidth="306.0"
+	xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.BudgetAppController">
+	<children>
+		<HBox prefHeight="40.0" prefWidth="306.0">
+			<children>
+				<Label prefHeight="25.0" prefWidth="101.0"
+					text="Budget category">
+					<HBox.margin>
+						<Insets left="10.0" />
+					</HBox.margin>
+				</Label>
+				<TextField fx:id="budgetCategoryName" />
+			</children>
+		</HBox>
+		<HBox prefHeight="40.0" prefWidth="200.0">
+			<children>
+				<Label prefHeight="25.0" prefWidth="101.0"
+					text="Monthly budget">
+					<HBox.margin>
+						<Insets left="10.0" />
+					</HBox.margin>
+				</Label>
+				<TextField fx:id="monthlyCategoryBudget" />
+			</children>
+		</HBox>
+		<Button mnemonicParsing="false" onAction="#addCategory"
+			prefHeight="25.0" prefWidth="95.0" text="Add Category">
+			<VBox.margin>
+				<Insets left="10.0" />
+			</VBox.margin>
+		</Button>
+	</children>
+</VBox>
