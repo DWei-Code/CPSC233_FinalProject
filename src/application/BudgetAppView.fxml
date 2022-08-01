@@ -35,8 +35,31 @@
 		<Button mnemonicParsing="false" onAction="#addCategory"
 			prefHeight="25.0" prefWidth="95.0" text="Add Category">
 			<VBox.margin>
-				<Insets left="10.0" />
+				<Insets bottom="10.0" left="10.0" />
 			</VBox.margin>
 		</Button>
+		<HBox prefHeight="40.0" prefWidth="200.0">
+			<children>
+				<Label prefHeight="25.0" prefWidth="101.0" text="Expense Item">
+					<HBox.margin>
+						<Insets left="10.0" />
+					</HBox.margin>
+				</Label>
+				<TextField fx:id="expenseItemName" />
+			</children>
+			<VBox.margin>
+				<Insets top="10.0" />
+			</VBox.margin>
+		</HBox>
+		<HBox prefHeight="40.0" prefWidth="200.0">
+			<children>
+				<Label prefHeight="25.0" prefWidth="101.0" text="Item cost">
+					<HBox.margin>
+						<Insets left="10.0" />
+					</HBox.margin>
+				</Label>
+				<TextField fx:id="expenseItemCost" />
+			</children>
+		</HBox>
 	</children>
 </VBox>
