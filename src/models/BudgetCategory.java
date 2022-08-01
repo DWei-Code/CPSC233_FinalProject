@@ -7,7 +7,7 @@ public class BudgetCategory {
 	private String name;
 	private ArrayList<ExpenseItem> listOfItems = new ArrayList<>();
 	
-	BudgetCategory(String name, double budget){
+	public BudgetCategory(String name, double budget){
 		this.name = name;
 		this.maxBudget = budget;
 	}
