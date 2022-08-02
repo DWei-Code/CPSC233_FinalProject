@@ -18,7 +18,10 @@ public class BudgetAppController {
 	TableView budgetCategoryTable = new TableView();
 	ArrayList<String> categoryNames = new ArrayList<String>();
 	ArrayList<BudgetCategory> categories = new ArrayList<BudgetCategory>();
-
+	
+	@FXML
+    private Label userMessage;
+	
 	@FXML
 	private VBox rootVbox;
 
@@ -62,12 +65,18 @@ public class BudgetAppController {
 			nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 			TableColumn<Double, BudgetCategory> budgetColumn = new TableColumn<>("Max Budget");
 			budgetColumn.setCellValueFactory(new PropertyValueFactory<>("maxBudget"));
+			TableColumn<Double, BudgetCategory> budgetLeftColumn = new TableColumn<>("Available budget");
+			budgetLeftColumn.setCellValueFactory(new PropertyValueFactory<>("budgetLeft"));
+			TableColumn<Double, BudgetCategory> overBudgetcolumn = new TableColumn<>("Over budget!");
+			overBudgetcolumn.setCellValueFactory(new PropertyValueFactory<>("overBudget"));
 			TableColumn<Button, BudgetCategory> editButtonColumn = new TableColumn<>("Action");
 			editButtonColumn.setCellValueFactory(new PropertyValueFactory<>("editButton"));
 			budgetCategoryTable.getColumns().add(nameColumn);
 			budgetCategoryTable.getColumns().add(budgetColumn);
+			budgetCategoryTable.getColumns().add(budgetLeftColumn);
+			budgetCategoryTable.getColumns().add(overBudgetcolumn);
 			budgetCategoryTable.getColumns().add(editButtonColumn);
-			budgetCategoryTable.setMaxSize(400, 100);
+			budgetCategoryTable.setMaxSize(500, 200);
 			// budgetCategoryTable.applyCss();
 
 			rootVbox.getChildren().add(3, budgetCategoryTable);
@@ -83,15 +92,19 @@ public class BudgetAppController {
 		String choiceBoxSelected = categoryChoiceBox.getValue();
 		System.out.println("Item Added: " + itemName + " Price:" + itemPrice + " Choice Box: " + choiceBoxSelected);
 
-		ExpenseItem newCategory = new ExpenseItem(itemName, itemPrice);
+		ExpenseItem newItem = new ExpenseItem(itemName, itemPrice);
 		
+		budgetCategoryTable.getItems().clear();
 		for(BudgetCategory bc : categories) {
 			if(bc.getName().equals(choiceBoxSelected)) {
-				bc.getListOfItems().add(newCategory);
-				System.out.println(bc.getListOfItems().get(0).getName());
-				bc.updateBudget();
+				//bc.getListOfItems().add(newCategory);
+				//System.out.println(bc.getListOfItems().get(0).getName());
+				userMessage.setText(bc.updateBudget(newItem));
 			}
+			budgetCategoryTable.getItems().add(bc);
 		}
+		
+		
 		
 	}
 
