@@ -11,13 +11,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.BudgetCategory;
 import models.ExpenseItem;
+import models.MakeTableView;
 
 public class BudgetAppController {
 	public Stage applicationStage;
 	// table view for categories
-	TableView budgetCategoryTable = new TableView();
-	ArrayList<String> categoryNames = new ArrayList<String>();
-	ArrayList<BudgetCategory> categories = new ArrayList<BudgetCategory>();
+	private MakeTableView budgetCategoryTable = new MakeTableView("budgetTable");
+	private MakeTableView itemsTable = new MakeTableView("itemTable");
+	private ArrayList<String> categoryNames = new ArrayList<String>();
+	private ArrayList<BudgetCategory> categories = new ArrayList<BudgetCategory>();
 	
 	@FXML
     private Label userMessage;
@@ -60,8 +62,8 @@ public class BudgetAppController {
 
 	private void updateTable(BudgetCategory newCategory) {
 		// add new table if it does not exist otherwise add items to table
-		if (!rootVbox.getChildren().contains(budgetCategoryTable)) {
-			TableColumn<String, BudgetCategory> nameColumn = new TableColumn<>("Budget Category");
+		if (!rootVbox.getChildren().contains(budgetCategoryTable.getBudgetCategoryTable())) {
+			/*TableColumn<String, BudgetCategory> nameColumn = new TableColumn<>("Budget Category");
 			nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 			TableColumn<Double, BudgetCategory> budgetColumn = new TableColumn<>("Max Budget");
 			budgetColumn.setCellValueFactory(new PropertyValueFactory<>("maxBudget"));
@@ -76,12 +78,14 @@ public class BudgetAppController {
 			budgetCategoryTable.getColumns().add(budgetLeftColumn);
 			budgetCategoryTable.getColumns().add(overBudgetcolumn);
 			budgetCategoryTable.getColumns().add(editButtonColumn);
-			budgetCategoryTable.setMaxSize(500, 200);
+			budgetCategoryTable.setMaxSize(500, 200);*/
 			// budgetCategoryTable.applyCss();
-
-			rootVbox.getChildren().add(3, budgetCategoryTable);
+			System.out.println("entered");
+			//budgetCategoryTable.addTableToStage(rootVbox);
+			rootVbox.getChildren().add(3, budgetCategoryTable.getBudgetCategoryTable());
 		}
-		budgetCategoryTable.getItems().add(newCategory);
+		//budgetCategoryTable.getItems().add(newCategory);
+		budgetCategoryTable.updateBudgetTable(newCategory);
 	}
 
 	@FXML
@@ -93,18 +97,18 @@ public class BudgetAppController {
 		System.out.println("Item Added: " + itemName + " Price:" + itemPrice + " Choice Box: " + choiceBoxSelected);
 
 		ExpenseItem newItem = new ExpenseItem(itemName, itemPrice);
-		
-		budgetCategoryTable.getItems().clear();
+		rootVbox.getChildren().add(itemsTable.getItemCategoryTable());
+		itemsTable.updateItemTable(newItem);
+		//budgetCategoryTable.getItems().clear();
+		budgetCategoryTable.clearBudgetTable();
 		for(BudgetCategory bc : categories) {
 			if(bc.getName().equals(choiceBoxSelected)) {
 				//bc.getListOfItems().add(newCategory);
 				//System.out.println(bc.getListOfItems().get(0).getName());
 				userMessage.setText(bc.updateBudget(newItem));
 			}
-			budgetCategoryTable.getItems().add(bc);
+			budgetCategoryTable.updateBudgetTable(bc);
 		}
-		
-		
 		
 	}
 
