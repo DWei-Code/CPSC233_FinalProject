@@ -11,13 +11,15 @@ public class BudgetCategory {
 	private String name;
 	private ArrayList<ExpenseItem> listOfItems = new ArrayList<>();
 	private Button editButton;
-
+	private Button detailsButton;
+	
 	public BudgetCategory(String name, double budget) {
 		this.name = name;
 		this.maxBudget = budget;
 		this.budgetLeft = budget;
 		this.overBudget = 0.0;
 		this.setEditButton(new Button("Edit Category"));
+		//this.setDetailsButton(new Button("Details"));
 	}
 
 	public double getMaxBudget() {
@@ -56,7 +58,8 @@ public class BudgetCategory {
 				overBudget = Math.abs(budgetLeft - newItem.getPrice());
 				budgetLeft = 0;
 			} else {
-				overBudget =  Math.abs(overBudget - newItem.getPrice());
+				overBudget =  overBudget + newItem.getPrice();
+				userMessage = String.format("Gone over buget by: %.02f.", overBudget);
 			}
 		} else {
 			budgetLeft -= newItem.getPrice();
@@ -74,5 +77,14 @@ public class BudgetCategory {
 	public void setEditButton(Button editButton) {
 		this.editButton = editButton;
 	}
+	
+	@SuppressWarnings("exports")
+	public Button getDetailsButton() {
+		return detailsButton;
+	}
 
+	@SuppressWarnings("exports")
+	public void setDetailsButton(Button detailsButton) {
+		this.detailsButton = detailsButton;
+	}
 }

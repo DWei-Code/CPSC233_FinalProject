@@ -49,14 +49,19 @@ public class MakeTableView extends VBox{
 		overBudgetcolumn.setCellValueFactory(new PropertyValueFactory<>("overBudget"));
 		TableColumn<BudgetCategory, Button> editButtonColumn = new TableColumn<>("Action");
 		editButtonColumn.setCellValueFactory(new PropertyValueFactory<>("editButton"));
+		TableColumn<BudgetCategory, Button> detailsButtonColumn = new TableColumn<>("Action");
+		detailsButtonColumn.setCellValueFactory(new PropertyValueFactory<>("detailsButton"));
+		
 		budgetCategoryTable.getColumns().add(nameColumn);
 		budgetCategoryTable.getColumns().add(budgetColumn);
 		budgetCategoryTable.getColumns().add(budgetLeftColumn);
 		budgetCategoryTable.getColumns().add(overBudgetcolumn);
 		budgetCategoryTable.getColumns().add(editButtonColumn);
+		budgetCategoryTable.getColumns().add(detailsButtonColumn);
 		
-		budgetCategoryTable.setMaxSize(500, 200);
+		budgetCategoryTable.setMaxSize(560, 200);
 	}
+	
 	public void updateItemTable(ExpenseItem itemToAdd) {
 		expenseItemTable.getItems().add(itemToAdd);
 	}

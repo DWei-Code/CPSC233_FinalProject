@@ -1,10 +1,17 @@
 package controller;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import application.Main;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
@@ -52,8 +59,17 @@ public class BudgetAppController {
 		BudgetCategory newCategory = new BudgetCategory(categoryName, categoryBudgetNumber);
 		categoryNames.add(newCategory.getName());
 		categories.add(newCategory);
+		Button setDetailAction = new Button("Details");
+		setDetailAction.setOnAction(detailsEvent -> showDetailView(newCategory));
+		newCategory.setDetailsButton(setDetailAction);
+		
 		updateTable(newCategory);
 		updateChoiceBox();
+	}
+
+	private void showDetailView(BudgetCategory categoryToShow) {
+		Scene mainScene = applicationStage.getScene();
+		Main.showCategoryDetails(applicationStage, mainScene, categoryToShow);
 	}
 
 	private void updateChoiceBox() {
@@ -62,29 +78,10 @@ public class BudgetAppController {
 
 	private void updateTable(BudgetCategory newCategory) {
 		// add new table if it does not exist otherwise add items to table
-		if (!rootVbox.getChildren().contains(budgetCategoryTable.getBudgetCategoryTable())) {
-			/*TableColumn<String, BudgetCategory> nameColumn = new TableColumn<>("Budget Category");
-			nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-			TableColumn<Double, BudgetCategory> budgetColumn = new TableColumn<>("Max Budget");
-			budgetColumn.setCellValueFactory(new PropertyValueFactory<>("maxBudget"));
-			TableColumn<Double, BudgetCategory> budgetLeftColumn = new TableColumn<>("Available budget");
-			budgetLeftColumn.setCellValueFactory(new PropertyValueFactory<>("budgetLeft"));
-			TableColumn<Double, BudgetCategory> overBudgetcolumn = new TableColumn<>("Over budget!");
-			overBudgetcolumn.setCellValueFactory(new PropertyValueFactory<>("overBudget"));
-			TableColumn<Button, BudgetCategory> editButtonColumn = new TableColumn<>("Action");
-			editButtonColumn.setCellValueFactory(new PropertyValueFactory<>("editButton"));
-			budgetCategoryTable.getColumns().add(nameColumn);
-			budgetCategoryTable.getColumns().add(budgetColumn);
-			budgetCategoryTable.getColumns().add(budgetLeftColumn);
-			budgetCategoryTable.getColumns().add(overBudgetcolumn);
-			budgetCategoryTable.getColumns().add(editButtonColumn);
-			budgetCategoryTable.setMaxSize(500, 200);*/
-			// budgetCategoryTable.applyCss();
-			System.out.println("entered");
+		if (!rootVbox.getChildren().contains(budgetCategoryTable.getBudgetCategoryTable())) {		
 			//budgetCategoryTable.addTableToStage(rootVbox);
 			rootVbox.getChildren().add(3, budgetCategoryTable.getBudgetCategoryTable());
 		}
-		//budgetCategoryTable.getItems().add(newCategory);
 		budgetCategoryTable.updateBudgetTable(newCategory);
 	}
 
@@ -97,14 +94,14 @@ public class BudgetAppController {
 		System.out.println("Item Added: " + itemName + " Price:" + itemPrice + " Choice Box: " + choiceBoxSelected);
 
 		ExpenseItem newItem = new ExpenseItem(itemName, itemPrice);
-		rootVbox.getChildren().add(itemsTable.getItemCategoryTable());
-		itemsTable.updateItemTable(newItem);
-		//budgetCategoryTable.getItems().clear();
+		//rootVbox.getChildren().add(itemsTable.getItemCategoryTable());
+		//itemsTable.clearItemTable();
+		//itemsTable.updateItemTable(newItem);
+
 		budgetCategoryTable.clearBudgetTable();
 		for(BudgetCategory bc : categories) {
 			if(bc.getName().equals(choiceBoxSelected)) {
-				//bc.getListOfItems().add(newCategory);
-				//System.out.println(bc.getListOfItems().get(0).getName());
+				bc.getListOfItems().add(newItem);
 				userMessage.setText(bc.updateBudget(newItem));
 			}
 			budgetCategoryTable.updateBudgetTable(bc);
