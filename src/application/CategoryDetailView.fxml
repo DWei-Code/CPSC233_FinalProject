@@ -9,6 +9,6 @@
 	xmlns:fx="http://javafx.com/fxml/1"
 	fx:controller="controller.CategoryDetailsController">
    <children>
-      <Button mnemonicParsing="false" onAction="#sceneSwitch" text="Scene 2" />
+      <Button mnemonicParsing="false" onAction="#sceneSwitch" text="Done" />
    </children>
 </VBox>

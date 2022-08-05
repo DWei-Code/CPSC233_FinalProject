@@ -7,6 +7,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 
+// reference learning material:
+// https://genotechies.medium.com/javafx-tableview-with-dynamically-filled-data-from-a-list-89ff6f8778e1
 public class MakeTableView extends VBox{
 	private TableView<BudgetCategory> budgetCategoryTable = new TableView<BudgetCategory>();
 	private TableView<ExpenseItem> expenseItemTable = new TableView<ExpenseItem>();
@@ -78,10 +80,12 @@ public class MakeTableView extends VBox{
 		budgetCategoryTable.getItems().clear();
 	}
 
+	@SuppressWarnings("exports")
 	public Node getBudgetCategoryTable() {
 		return budgetCategoryTable;
 	}
 	
+	@SuppressWarnings("exports")
 	public Node getItemCategoryTable() {
 		return expenseItemTable;
 	}

@@ -18,8 +18,7 @@ public class BudgetCategory {
 		this.maxBudget = budget;
 		this.budgetLeft = budget;
 		this.overBudget = 0.0;
-		this.setEditButton(new Button("Edit Category"));
-		//this.setDetailsButton(new Button("Details"));
+		//this.setEditButton(new Button("Edit Category"));
 	}
 
 	public double getMaxBudget() {

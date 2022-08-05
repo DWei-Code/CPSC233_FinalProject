@@ -9,7 +9,11 @@ import javafx.stage.Stage;
 import models.BudgetCategory;
 import models.ExpenseItem;
 import models.MakeTableView;
-
+/**
+ * controller class for controlling UI for CategoryDetailView.fxml
+ * @author yunwei
+ *
+ */
 public class CategoryDetailsController {
 
 	public Stage applicationStage;
@@ -20,7 +24,11 @@ public class CategoryDetailsController {
 	
 	@FXML
 	private VBox detailsVbox;
-
+	
+	/**
+	 * switches scene back to main screen
+	 * @param event button click event
+	 */
 	@FXML
 	void sceneSwitch(ActionEvent event) {
 		applicationStage.setScene(mainScene);
@@ -33,7 +41,10 @@ public class CategoryDetailsController {
 	public void setSelectedCategory(BudgetCategory selectedCategory) {
 		this.selectedCategory = selectedCategory;
 	}
-
+	/**
+	 * Generates a table of ExpenItems (using MakeTableView class) that the user 
+	 * selected BudgetCategory owns under its instance ArrayList.
+	 */
 	public void showItemsTable() {
 		detailsVbox.getChildren().add(0, itemsTable.getItemCategoryTable());
 		itemsTable.clearItemTable();
