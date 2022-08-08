@@ -19,6 +19,7 @@ import models.MakeTableView;
 
 /**
  * Controller class for controlling UI from BudgetAppView.fxml
+ * 
  * @author yunwei
  *
  */
@@ -28,10 +29,10 @@ public class BudgetAppController {
 	// table view for categories
 	private MakeTableView budgetCategoryTable = new MakeTableView("budgetTable");
 	private ArrayList<BudgetCategory> categories = new ArrayList<BudgetCategory>();
-	
+
 	@FXML
-    private Label userMessage;
-	
+	private Label userMessage;
+
 	@FXML
 	private VBox rootVbox;
 
@@ -49,10 +50,12 @@ public class BudgetAppController {
 
 	@FXML
 	private TextField expenseItemName;
-	
+
 	/**
-	 * upon clicking Add Category button, create a new BudgetCategory with user entries and 2 buttons and 
-	 * add them to a row in a table created by MakeTableView class.
+	 * upon clicking Add Category button, create a new BudgetCategory with user
+	 * entries and 2 buttons and add them to a row in a table created by
+	 * MakeTableView class.
+	 * 
 	 * @param event on button click event
 	 */
 	@FXML
@@ -60,105 +63,124 @@ public class BudgetAppController {
 		String categoryName = budgetCategoryName.getText();
 		String categoryBudget = monthlyCategoryBudget.getText();
 		double categoryBudgetNumber = Double.parseDouble(categoryBudget);
-		System.out.println("Category Added: " + categoryName + " Budget:" + categoryBudget);
+		//System.out.println("Category Added: " + categoryName + " Budget:" + categoryBudget);
 
-		BudgetCategory newCategory = new BudgetCategory(categoryName, categoryBudgetNumber);
-		categories.add(newCategory);
-		Button setDetailAction = new Button("Details");
-		setDetailAction.setOnAction(detailsEvent -> {
-			try {
-				showDetailView(newCategory);
-			} catch (IOException e1) {
-				e1.printStackTrace();
+		// unique budget categories only, if name repeats do not allow user to add.
+		boolean makeNewCategory = true;
+		for (BudgetCategory checkName : categories) {
+			if (checkName.getName().equals(categoryName)) {
+				makeNewCategory = false;
 			}
-		});
-		newCategory.setDetailsButton(setDetailAction);
-		
-		Button setEditAction = new Button("Edit Category");
-		setEditAction.setOnAction(detailsEvent -> {
-			try {
-				showEditView(newCategory);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
-		newCategory.setEditButton(setEditAction);
-		
-		updateTable(newCategory);
-		updateChoiceBox();
+		}
+		if (makeNewCategory) {
+			BudgetCategory newCategory = new BudgetCategory(categoryName, categoryBudgetNumber);
+			categories.add(newCategory);
+			Button setDetailAction = new Button("Details");
+			setDetailAction.setOnAction(detailsEvent -> {
+				try {
+					showDetailView(newCategory);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			});
+			newCategory.setDetailsButton(setDetailAction);
+
+			Button setEditAction = new Button("Edit Category");
+			setEditAction.setOnAction(detailsEvent -> {
+				try {
+					showEditView(newCategory);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+			newCategory.setEditButton(setEditAction);
+
+			updateTable(newCategory);
+			updateChoiceBox();
+		} else {
+			userMessage.setText("Category already exists,please add unique category only!");
+		}
 	}
-	
+
 	/**
-	 * switches the scene to EditCategoryView.fxml where the user can edit a specific BudgetCategory
-	 * passes control over to EditCategoryController class
+	 * switches the scene to EditCategoryView.fxml where the user can edit a
+	 * specific BudgetCategory passes control over to EditCategoryController class
+	 * 
 	 * @param categoryToEdit the category the user selected to edit
 	 * @throws FileNotFoundException when EditCategoryView.fxml is not found
-	 * @throws IOException when having errors accessing EditCategoryView.fxml 
+	 * @throws IOException           when having errors accessing
+	 *                               EditCategoryView.fxml
 	 */
 	private void showEditView(BudgetCategory categoryToEdit) throws FileNotFoundException, IOException {
 		FXMLLoader loader = new FXMLLoader();
 		VBox root = loader.load(new FileInputStream("src/application/EditCategoryView.fxml"));
-		EditCategoryController controller = (EditCategoryController)loader.getController();
+		EditCategoryController controller = (EditCategoryController) loader.getController();
 		controller.mainScene = applicationStage.getScene();
 		controller.editCategoryStage = this.applicationStage;
 		controller.setEditCategory(categoryToEdit);
 		controller.setBeforeEditCategory(categoryToEdit);
 		controller.setViewFields(categoryToEdit);
 		controller.refreshCategoryData = this;
-		
-		Scene scene = new Scene(root,400,300);
-		
+
+		Scene scene = new Scene(root, 400, 300);
+
 		applicationStage.setScene(scene);
 		applicationStage.setTitle("Budget Tracker");
 		applicationStage.show();
 	}
-	
+
 	/**
-	 * switches the scene to EditCategoryView.fxml where the user can see a table of items 
-	 * belonging to this category. Passes control over to CategoryDetailsController class
+	 * switches the scene to EditCategoryView.fxml where the user can see a table of
+	 * items belonging to this category. Passes control over to
+	 * CategoryDetailsController class
+	 * 
 	 * @param categoryToShow
 	 * @throws FileNotFoundException when CategoryDetailView.fxml is not found
-	 * @throws IOException when having errors accessing CategoryDetailView.fxml
+	 * @throws IOException           when having errors accessing
+	 *                               CategoryDetailView.fxml
 	 */
 	private void showDetailView(BudgetCategory categoryToShow) throws FileNotFoundException, IOException {
 		FXMLLoader loader = new FXMLLoader();
-	    VBox root = loader.load(new FileInputStream("src/application/CategoryDetailView.fxml"));
-		CategoryDetailsController controller = (CategoryDetailsController)loader.getController();
+		VBox root = loader.load(new FileInputStream("src/application/CategoryDetailView.fxml"));
+		CategoryDetailsController controller = (CategoryDetailsController) loader.getController();
 		controller.mainScene = applicationStage.getScene();
 		controller.applicationStage = this.applicationStage;
 		controller.setSelectedCategory(categoryToShow);
 		controller.showItemsTable();
-		
-		Scene scene = new Scene(root,600,400);
-		
+
+		Scene scene = new Scene(root, 600, 400);
+
 		applicationStage.setScene(scene);
 		applicationStage.setTitle("Budget Tracker");
 		applicationStage.show();
 	}
-	
+
 	/**
-	 * updates the choice box for adding items every time a new BugetCategory is added
+	 * updates the choice box for adding items every time a new BugetCategory is
+	 * added
 	 */
 	private void updateChoiceBox() {
 		ArrayList<String> categoryNames = new ArrayList<String>();
-		for(BudgetCategory bc : categories) {
+		for (BudgetCategory bc : categories) {
 			categoryNames.add(bc.getName());
-		}		
-		categoryChoiceBox.setItems(FXCollections.observableArrayList(categoryNames));	
+		}
+		categoryChoiceBox.setItems(FXCollections.observableArrayList(categoryNames));
 	}
-	
+
 	/**
-	 * Every time a new BugetCategory is added, this is called to update the table on the screen
+	 * Every time a new BugetCategory is added, this is called to update the table
+	 * on the screen
+	 * 
 	 * @param newCategory the new category added
 	 */
 	private void updateTable(BudgetCategory newCategory) {
 		// add new table if it does not exist otherwise add items to table
-		if (!rootVbox.getChildren().contains(budgetCategoryTable.getBudgetCategoryTable())) {		
+		if (!rootVbox.getChildren().contains(budgetCategoryTable.getBudgetCategoryTable())) {
 			rootVbox.getChildren().add(3, budgetCategoryTable.getBudgetCategoryTable());
 		}
 		budgetCategoryTable.updateBudgetTable(newCategory);
 	}
-	
+
 	/**
 	 * 
 	 * @return an ArrayList of BudgetCategory currently added
@@ -166,29 +188,34 @@ public class BudgetAppController {
 	public ArrayList<BudgetCategory> getCategories() {
 		return categories;
 	}
-	
+
 	/**
-	 * when user updates category in EditCategoryController, saves the changes and clicks done,
-	 * this is called to persist the changes by replacing the category information in the instance variable
-	 * ArrayList "categories" and updating the table.
-	 * @param editedCategory the newly edited category information
+	 * when user updates category in EditCategoryController, saves the changes and
+	 * clicks done, this is called to persist the changes by replacing the category
+	 * information in the instance variable ArrayList "categories" and updating the
+	 * table.
+	 * 
+	 * @param editedCategory     the newly edited category information
 	 * @param beforeEditCategory before it was edited information
 	 */
 	public void updateCategory(BudgetCategory editedCategory, BudgetCategory beforeEditCategory) {
-		// this is probably not the best way to match, thinking of adding an ID to budget category for
+		// this is probably not the best way to match, thinking of adding an ID to
+		// budget category for
 		// future iterations.
 		budgetCategoryTable.clearBudgetTable();
-		for(int i = 0 ; i < categories.size(); i ++) {
-			if(categories.get(i).getName().equals(beforeEditCategory.getName())) {
+		for (int i = 0; i < categories.size(); i++) {
+			if (categories.get(i).getName().equals(beforeEditCategory.getName())) {
 				categories.set(i, editedCategory);
 			}
 			budgetCategoryTable.updateBudgetTable(categories.get(i));
 		}
+		updateChoiceBox();
 	}
-	
+
 	/**
-	 * Adds ExpenseItem under a BugdetCategory and calculates the available budget left that was set for
-	 * the category
+	 * Adds ExpenseItem under a BugdetCategory and calculates the available budget
+	 * left that was set for the category
+	 * 
 	 * @param event button click event
 	 */
 	@FXML
@@ -202,14 +229,14 @@ public class BudgetAppController {
 		ExpenseItem newItem = new ExpenseItem(itemName, itemPrice);
 
 		budgetCategoryTable.clearBudgetTable();
-		for(BudgetCategory bc : categories) {
-			if(bc.getName().equals(choiceBoxSelected)) {
+		for (BudgetCategory bc : categories) {
+			if (bc.getName().equals(choiceBoxSelected)) {
 				bc.getListOfItems().add(newItem);
 				userMessage.setText(bc.updateBudget(newItem));
 			}
 			budgetCategoryTable.updateBudgetTable(bc);
 		}
-		
+
 	}
 
 }
