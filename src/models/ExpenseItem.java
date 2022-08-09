@@ -1,6 +1,6 @@
 package models;
 
-public class ExpenseItem {
+public abstract class ExpenseItem {
 	private double price;
 	private String name;
 	
@@ -8,6 +8,8 @@ public class ExpenseItem {
 		this.name = name;
 		this.price = price;
 	}
+	
+	public abstract double getMonthlyExpense();
 
 	public double getPrice() {
 		return price;

@@ -42,8 +42,33 @@ public class BudgetCategory {
 	}
 
 	public void setMaxBudget(double maxBudget) {
+		updateOtherBudgets(this.maxBudget, maxBudget);
 		this.maxBudget = maxBudget;
 	}
+	
+	/**
+	 * method used to update budget instance variables when user edits max budget
+	 * @param currentMaxBudget max budget before editing
+	 * @param newMaxBudget new set max budget
+	 */
+	public void updateOtherBudgets(double currentMaxBudget, double newMaxBudget) {
+		/*if there is budget left update budget left only
+		 *else check if budget increase is higher than current over budget,
+		 *if it is update budget left and set budget over back to zero
+		 *if its not update over budget only keep budget left at zero.
+		 */
+		if(this.budgetLeft != 0) {
+			this.budgetLeft += (newMaxBudget - currentMaxBudget);
+		}else {
+			if((newMaxBudget - currentMaxBudget) > this.overBudget) {
+				this.budgetLeft = (newMaxBudget - currentMaxBudget) - this.overBudget;
+				this.overBudget = 0;
+			}else {
+				this.overBudget = Math.abs((newMaxBudget - currentMaxBudget) - this.overBudget);
+			}
+		}
+	}
+	
 
 	public void setName(String name) {
 		this.name = name;
@@ -51,17 +76,17 @@ public class BudgetCategory {
 
 	public String updateBudget(ExpenseItem newItem) {
 		String userMessage = "";
-		if (budgetLeft - newItem.getPrice() < 0) {
-			userMessage = String.format("Gone over buget by: %.02f.", Math.abs(budgetLeft - newItem.getPrice()));
+		if (budgetLeft - newItem.getMonthlyExpense() < 0) {
+			userMessage = String.format("Gone over buget by: %.02f.", Math.abs(budgetLeft - newItem.getMonthlyExpense()));
 			if (overBudget == 0.0) {
-				overBudget = Math.abs(budgetLeft - newItem.getPrice());
+				overBudget = Math.abs(budgetLeft - newItem.getMonthlyExpense());
 				budgetLeft = 0;
 			} else {
-				overBudget =  overBudget + newItem.getPrice();
+				overBudget =  overBudget + newItem.getMonthlyExpense();
 				userMessage = String.format("Gone over buget by: %.02f.", overBudget);
 			}
 		} else {
-			budgetLeft -= newItem.getPrice();
+			budgetLeft -= newItem.getMonthlyExpense();
 			userMessage = String.format("Budget left for category %s:  %.02f.", this.name, budgetLeft);
 		}
 		return userMessage;

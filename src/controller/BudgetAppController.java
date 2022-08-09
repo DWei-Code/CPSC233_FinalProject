@@ -13,9 +13,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import models.BiWeeklyItem;
 import models.BudgetCategory;
 import models.ExpenseItem;
 import models.MakeTableView;
+import models.OneTimeItem;
+import models.WeeklyItem;
 
 /**
  * Controller class for controlling UI from BudgetAppView.fxml
@@ -43,6 +46,9 @@ public class BudgetAppController {
 	private ChoiceBox<String> categoryChoiceBox;
 
 	@FXML
+	private ChoiceBox<String> paymentTypeChoiceBox;
+
+	@FXML
 	private TextField monthlyCategoryBudget;
 
 	@FXML
@@ -63,7 +69,8 @@ public class BudgetAppController {
 		String categoryName = budgetCategoryName.getText();
 		String categoryBudget = monthlyCategoryBudget.getText();
 		double categoryBudgetNumber = Double.parseDouble(categoryBudget);
-		//System.out.println("Category Added: " + categoryName + " Budget:" + categoryBudget);
+		// System.out.println("Category Added: " + categoryName + " Budget:" +
+		// categoryBudget);
 
 		// unique budget categories only, if name repeats do not allow user to add.
 		boolean makeNewCategory = true;
@@ -75,7 +82,7 @@ public class BudgetAppController {
 		if (makeNewCategory) {
 			BudgetCategory newCategory = new BudgetCategory(categoryName, categoryBudgetNumber);
 			categories.add(newCategory);
-			Button setDetailAction = new Button("Details");
+			Button setDetailAction = new Button("View Details");
 			setDetailAction.setOnAction(detailsEvent -> {
 				try {
 					showDetailView(newCategory);
@@ -95,7 +102,7 @@ public class BudgetAppController {
 			});
 			newCategory.setEditButton(setEditAction);
 
-			updateTable(newCategory);
+			updateTable(newCategory, setEditAction, setDetailAction);
 			updateChoiceBox();
 		} else {
 			userMessage.setText("Category already exists,please add unique category only!");
@@ -171,14 +178,19 @@ public class BudgetAppController {
 	 * Every time a new BugetCategory is added, this is called to update the table
 	 * on the screen
 	 * 
-	 * @param newCategory the new category added
+	 * @param newCategory     the new category added
+	 * @param setEditAction
+	 * @param setDetailAction
 	 */
-	private void updateTable(BudgetCategory newCategory) {
+	private void updateTable(BudgetCategory newCategory, Button setEditAction, Button setDetailAction) {
 		// add new table if it does not exist otherwise add items to table
 		if (!rootVbox.getChildren().contains(budgetCategoryTable.getBudgetCategoryTable())) {
 			rootVbox.getChildren().add(3, budgetCategoryTable.getBudgetCategoryTable());
 		}
 		budgetCategoryTable.updateBudgetTable(newCategory);
+		// budgetCategoryTable.addEditButton(setEditAction);
+		// budgetCategoryTable.addDetailButton(setDetailAction);
+
 	}
 
 	/**
@@ -223,14 +235,31 @@ public class BudgetAppController {
 		String itemName = expenseItemName.getText();
 		String expenseItemPrice = expenseItemCost.getText();
 		double itemPrice = Double.parseDouble(expenseItemPrice);
-		String choiceBoxSelected = categoryChoiceBox.getValue();
-		System.out.println("Item Added: " + itemName + " Price:" + itemPrice + " Choice Box: " + choiceBoxSelected);
+		String categoryChoiceBoxSelected = categoryChoiceBox.getValue();
+		String paymentChoiceBoxSelected = paymentTypeChoiceBox.getValue();
+		System.out.println(
+				"Item Added: " + itemName + " Price:" + itemPrice + " Choice Box: " + categoryChoiceBoxSelected);
+		
+		ExpenseItem newItem = null;
+		switch (paymentChoiceBoxSelected) {
+		case "One Time":
+			newItem = new OneTimeItem(itemName, itemPrice);
+			break;
+		case "Weekly":
+			newItem = new WeeklyItem(itemName, itemPrice);
+			break;
+		case "Bi-Weekly":
+			newItem = new BiWeeklyItem(itemName, itemPrice);
+			break;
+		default:
+			userMessage.setText("Please select item payment type!");
 
-		ExpenseItem newItem = new ExpenseItem(itemName, itemPrice);
+		}
+		// ExpenseItem newItem = new ExpenseItem(itemName, itemPrice);
 
 		budgetCategoryTable.clearBudgetTable();
 		for (BudgetCategory bc : categories) {
-			if (bc.getName().equals(choiceBoxSelected)) {
+			if (bc.getName().equals(categoryChoiceBoxSelected)) {
 				bc.getListOfItems().add(newItem);
 				userMessage.setText(bc.updateBudget(newItem));
 			}

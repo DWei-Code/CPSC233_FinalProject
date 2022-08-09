@@ -5,6 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.BudgetCategory;
 
@@ -46,6 +49,20 @@ public class EditCategoryController {
     	editCategory.setName(selectedCategoryName.getText());
     	editCategory.setMaxBudget(Double.parseDouble(selectedCategoryBudget.getText()));
     	editUserMessage.setText("Category updated!");
+    }
+    
+    //https://stackoverflow.com/questions/22166610/how-to-create-a-popup-window-in-javafx
+    //maybe implement later
+    @FXML
+    void popUp(ActionEvent event) {
+    	final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(editCategoryStage);
+        VBox dialogVbox = new VBox(20);
+        dialogVbox.getChildren().add(new Text("This is a Dialog"));
+        Scene dialogScene = new Scene(dialogVbox, 300, 200);
+        dialog.setScene(dialogScene);
+        dialog.show();
     }
     
 	public BudgetCategory getEditCategory() {
