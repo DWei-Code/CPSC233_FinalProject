@@ -74,7 +74,7 @@ public class MakeTableView extends VBox{
 		budgetCategoryTable.getColumns().add(editButtonColumn);
 		budgetCategoryTable.getColumns().add(detailsButtonColumn);
 
-		budgetCategoryTable.setMaxSize(560, 200);
+		budgetCategoryTable.setMaxSize(600, 200);
 	}
 
 	

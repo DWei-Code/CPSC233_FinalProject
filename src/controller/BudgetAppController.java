@@ -18,6 +18,7 @@ import models.BudgetCategory;
 import models.ExpenseItem;
 import models.MakeTableView;
 import models.OneTimeItem;
+import models.Utility;
 import models.WeeklyItem;
 
 /**
@@ -32,6 +33,7 @@ public class BudgetAppController {
 	// table view for categories
 	private MakeTableView budgetCategoryTable = new MakeTableView("budgetTable");
 	private ArrayList<BudgetCategory> categories = new ArrayList<BudgetCategory>();
+	private Utility utilities = new Utility();
 
 	@FXML
 	private Label userMessage;
@@ -73,13 +75,8 @@ public class BudgetAppController {
 		// categoryBudget);
 
 		// unique budget categories only, if name repeats do not allow user to add.
-		boolean makeNewCategory = true;
-		for (BudgetCategory checkName : categories) {
-			if (checkName.getName().equals(categoryName)) {
-				makeNewCategory = false;
-			}
-		}
-		if (makeNewCategory) {
+		boolean makeNewCategory = utilities.checkBudgetCategoryDuplication(categories, categoryName);
+		if (!makeNewCategory) {
 			BudgetCategory newCategory = new BudgetCategory(categoryName, categoryBudgetNumber);
 			categories.add(newCategory);
 			Button setDetailAction = new Button("View Details");
@@ -124,6 +121,7 @@ public class BudgetAppController {
 		EditCategoryController controller = (EditCategoryController) loader.getController();
 		controller.mainScene = applicationStage.getScene();
 		controller.editCategoryStage = this.applicationStage;
+		controller.categoryList = this.categories;
 		controller.setEditCategory(categoryToEdit);
 		controller.setBeforeEditCategory(categoryToEdit);
 		controller.setViewFields(categoryToEdit);
@@ -211,15 +209,19 @@ public class BudgetAppController {
 	 * @param beforeEditCategory before it was edited information
 	 */
 	public void updateCategory(BudgetCategory editedCategory, BudgetCategory beforeEditCategory) {
-		// this is probably not the best way to match, thinking of adding an ID to
-		// budget category for
-		// future iterations.
+		// matches on unique Category names an updates or deletes category based on user
+		// selection
 		budgetCategoryTable.clearBudgetTable();
 		for (int i = 0; i < categories.size(); i++) {
 			if (categories.get(i).getName().equals(beforeEditCategory.getName())) {
-				categories.set(i, editedCategory);
+				if (editedCategory == null) {
+					categories.remove(i);
+				} else {
+					categories.set(i, editedCategory);
+					budgetCategoryTable.updateBudgetTable(categories.get(i));
+				}
 			}
-			budgetCategoryTable.updateBudgetTable(categories.get(i));
+			
 		}
 		updateChoiceBox();
 	}
@@ -241,6 +243,7 @@ public class BudgetAppController {
 				"Item Added: " + itemName + " Price:" + itemPrice + " Choice Box: " + categoryChoiceBoxSelected);
 		
 		ExpenseItem newItem = null;
+		//switch for determining which subclass of item to make depending on user choice
 		switch (paymentChoiceBoxSelected) {
 		case "One Time":
 			newItem = new OneTimeItem(itemName, itemPrice);
@@ -255,7 +258,6 @@ public class BudgetAppController {
 			userMessage.setText("Please select item payment type!");
 
 		}
-		// ExpenseItem newItem = new ExpenseItem(itemName, itemPrice);
 
 		budgetCategoryTable.clearBudgetTable();
 		for (BudgetCategory bc : categories) {

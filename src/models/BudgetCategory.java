@@ -18,7 +18,14 @@ public class BudgetCategory {
 		this.maxBudget = budget;
 		this.budgetLeft = budget;
 		this.overBudget = 0.0;
-		//this.setEditButton(new Button("Edit Category"));
+	}
+	
+	/**
+	 * copy constructor to same budget category name to use for unique category checks
+	 * @param toCopy budget category to copy
+	 */
+	public BudgetCategory(BudgetCategory toCopy) {
+		this.name = toCopy.name;
 	}
 
 	public double getMaxBudget() {
