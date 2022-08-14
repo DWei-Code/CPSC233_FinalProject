@@ -15,7 +15,7 @@
                   <Insets />
                </HBox.margin>
             </Label>
-            <TextField />
+            <TextField fx:id="itemNameTextField" />
          </children>
          <VBox.margin>
             <Insets left="10.0" top="10.0" />
@@ -24,7 +24,7 @@
       <HBox prefHeight="40.0" prefWidth="200.0">
          <children>
             <Label prefHeight="25.0" prefWidth="100.0" text="Item price" />
-            <TextField />
+            <TextField fx:id="itemPriceTextField" />
          </children>
          <VBox.margin>
             <Insets left="10.0" />
@@ -32,12 +32,12 @@
       </HBox>
       <HBox prefHeight="40.0" prefWidth="200.0">
          <children>
-            <Button mnemonicParsing="false" text="Button">
+            <Button mnemonicParsing="false" onAction="#saveItemEdit" text="Save">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Button">
+            <Button mnemonicParsing="false" onAction="#cancelEdit" text="Cancel">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

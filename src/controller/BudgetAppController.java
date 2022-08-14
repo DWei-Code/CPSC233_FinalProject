@@ -211,17 +211,24 @@ public class BudgetAppController {
 	public void updateCategory(BudgetCategory editedCategory, BudgetCategory beforeEditCategory) {
 		// matches on unique Category names an updates or deletes category based on user
 		// selection
+		boolean updateTable = true;
 		budgetCategoryTable.clearBudgetTable();
 		for (int i = 0; i < categories.size(); i++) {
+			//System.out.println(categories.get(i).getName());
+			//System.out.println(beforeEditCategory.getName());
 			if (categories.get(i).getName().equals(beforeEditCategory.getName())) {
 				if (editedCategory == null) {
 					categories.remove(i);
+					updateTable = false;
 				} else {
+					updateTable = true;
 					categories.set(i, editedCategory);
-					budgetCategoryTable.updateBudgetTable(categories.get(i));
 				}
 			}
-			
+			if (updateTable) {
+				budgetCategoryTable.updateBudgetTable(categories.get(i));
+			}
+
 		}
 		updateChoiceBox();
 	}
@@ -241,9 +248,10 @@ public class BudgetAppController {
 		String paymentChoiceBoxSelected = paymentTypeChoiceBox.getValue();
 		System.out.println(
 				"Item Added: " + itemName + " Price:" + itemPrice + " Choice Box: " + categoryChoiceBoxSelected);
-		
+
 		ExpenseItem newItem = null;
-		//switch for determining which subclass of item to make depending on user choice
+		// switch for determining which subclass of item to make depending on user
+		// choice
 		switch (paymentChoiceBoxSelected) {
 		case "One Time":
 			newItem = new OneTimeItem(itemName, itemPrice);

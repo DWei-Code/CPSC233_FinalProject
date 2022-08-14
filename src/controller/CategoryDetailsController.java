@@ -1,9 +1,9 @@
 package controller;
 
-import application.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.BudgetCategory;
@@ -16,12 +16,20 @@ import models.MakeTableView;
  */
 public class CategoryDetailsController {
 
+	@SuppressWarnings("exports")
 	public Stage applicationStage;
+	@SuppressWarnings("exports")
 	public Scene mainScene;
 
 	private BudgetCategory selectedCategory;
 	private MakeTableView itemsTable = new MakeTableView("itemTable");
 	
+    @FXML
+    private TextField itemNameTextField;
+
+    @FXML
+    private TextField itemPriceTextField;
+    
 	@FXML
 	private VBox detailsVbox;
 	
@@ -52,4 +60,14 @@ public class CategoryDetailsController {
 			itemsTable.updateItemTable(ei);
 		}
 	}
+	
+    @FXML
+    void saveItemEdit(ActionEvent event) {
+
+    }
+
+    @FXML
+    void cancelEdit(ActionEvent event) {
+
+    }
 }

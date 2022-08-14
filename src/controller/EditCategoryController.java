@@ -52,10 +52,13 @@ public class EditCategoryController {
 	void updateCategory(ActionEvent event) {
 		String updatedCategoryName = selectedCategoryName.getText();
 		boolean updateCategory = utilities.checkBudgetCategoryDuplication(categoryList, updatedCategoryName);
+		if(updatedCategoryName.equals(beforeEditCategory.getName())) {
+			updateCategory = false;
+		}
 		if (!updateCategory) {
-			editCategory.setName(selectedCategoryName.getText());
+			editCategory.setName(updatedCategoryName);
 			editCategory.setMaxBudget(Double.parseDouble(selectedCategoryBudget.getText()));
-			refreshCategoryData.updateCategory(beforeEditCategory, editCategory);
+			refreshCategoryData.updateCategory(editCategory, beforeEditCategory);
 			// editUserMessage.setText("Category updated!");
 			editCategoryStage.setScene(mainScene);
 		} else {
@@ -91,7 +94,7 @@ public class EditCategoryController {
 	}
 
 	public void setBeforeEditCategory(BudgetCategory beforeEditCategory) {
-		this.beforeEditCategory = new BudgetCategory (beforeEditCategory);
+		this.beforeEditCategory = beforeEditCategory;
 	}
 
 }

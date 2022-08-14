@@ -16,6 +16,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.stage.Window;
 import javafx.util.Callback;
 
 // reference learning material:
@@ -44,9 +45,12 @@ public class MakeTableView extends VBox{
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		TableColumn<ExpenseItem, Double> itemPriceColumn = new TableColumn<>("ItemPrice");
 		itemPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+		//TableColumn<ExpenseItem, Double> idColumn = new TableColumn<>("ID");
+		//idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 		expenseItemTable.getColumns().add(nameColumn);
 		expenseItemTable.getColumns().add(itemPriceColumn);
-
+		//expenseItemTable.getColumns().add(idColumn);
+		addItemEditButton();
 		expenseItemTable.setMaxSize(500, 200);
 
 	}
@@ -145,6 +149,46 @@ public class MakeTableView extends VBox{
 //		if (!budgetCategoryTable.getColumns().contains(detailsButtonColumn)) {
 //			budgetCategoryTable.getColumns().add(detailsButtonColumn);
 //		}
+	}
+	
+	public void addItemEditButton() {
+		TableColumn<ExpenseItem, Void> editButtonColumn = new TableColumn<>("Edit");
+		Callback<TableColumn<ExpenseItem, Void>, TableCell<ExpenseItem, Void>> editButtonCell = new Callback<TableColumn<ExpenseItem, Void>, TableCell<ExpenseItem, Void>>() {
+			@Override
+			public TableCell<ExpenseItem, Void> call(final TableColumn<ExpenseItem, Void> param) {
+				final TableCell<ExpenseItem, Void> cell = new TableCell<ExpenseItem, Void>() {
+					private Button editButton = new Button("Edit");
+					{
+						editButton.setOnAction((ActionEvent event) -> {
+							ExpenseItem selectedItem = getTableView().getItems().get(getIndex());
+                           // System.out.println("selectedData: " + selectedItem.getName());
+                            passItemData(selectedItem);
+                            Node detailsViewSource = (Node) event.getSource();
+                            Window detailsViewStage = detailsViewSource.getScene().getWindow();
+                        });
+					}
+					@Override
+					public void updateItem(Void item, boolean empty) {
+						super.updateItem(item, empty);
+						if (empty) {
+							setGraphic(null);
+						} else {
+							setGraphic(editButton);
+						}
+					}
+				};
+				return cell;
+			}
+		};
+		
+		editButtonColumn.setCellFactory(editButtonCell);
+		if (!expenseItemTable.getColumns().contains(editButtonColumn)) {
+			expenseItemTable.getColumns().add(editButtonColumn);
+		}
+	}
+	
+	public void passItemData(ExpenseItem selectedItem) {
+		 System.out.println("selectedData: " + selectedItem.getName());
 	}
 
 	public void updateItemTable(ExpenseItem itemToAdd) {
