@@ -98,6 +98,21 @@ public class BudgetCategory {
 		}
 		return userMessage;
 	}
+	
+	/**
+	 * adds an items budget back into this category's budget
+	 * @param beforeEdit the item budget to add back in.
+	 */
+	public void addBudget(ExpenseItem beforeEdit) {
+		if(budgetLeft != 0) {
+			budgetLeft += beforeEdit.getMonthlyExpense();
+		}else if (overBudget - beforeEdit.getMonthlyExpense() < 0 ){
+			budgetLeft += Math.abs(overBudget - beforeEdit.getMonthlyExpense());
+			overBudget = 0.0;
+		}else {
+			overBudget -= beforeEdit.getMonthlyExpense();
+		}
+	}
 
 	@SuppressWarnings("exports")
 	public Button getEditButton() {
@@ -118,4 +133,6 @@ public class BudgetCategory {
 	public void setDetailsButton(Button detailsButton) {
 		this.detailsButton = detailsButton;
 	}
+
+	
 }

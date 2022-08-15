@@ -1,12 +1,10 @@
 package models;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import controller.EditCategoryController;
+import controller.CategoryDetailsController;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -16,7 +14,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import javafx.stage.Window;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 // reference learning material:
@@ -45,13 +43,16 @@ public class MakeTableView extends VBox{
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		TableColumn<ExpenseItem, Double> itemPriceColumn = new TableColumn<>("ItemPrice");
 		itemPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-		//TableColumn<ExpenseItem, Double> idColumn = new TableColumn<>("ID");
-		//idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+		TableColumn<ExpenseItem, Double> itemTypeColumn = new TableColumn<>("Payment Occurence");
+		itemTypeColumn.setCellValueFactory(new PropertyValueFactory<>("itemType"));
+		TableColumn<ExpenseItem, Double> monthlyCostColumn = new TableColumn<>("Monthly Cost");
+		monthlyCostColumn.setCellValueFactory(new PropertyValueFactory<>("monthlyExpense"));
 		expenseItemTable.getColumns().add(nameColumn);
 		expenseItemTable.getColumns().add(itemPriceColumn);
-		//expenseItemTable.getColumns().add(idColumn);
-		addItemEditButton();
-		expenseItemTable.setMaxSize(500, 200);
+		expenseItemTable.getColumns().add(itemTypeColumn);
+		expenseItemTable.getColumns().add(monthlyCostColumn);
+		
+		expenseItemTable.setMaxSize(400, 200);
 
 	}
 	//TableColumn<BudgetCategory, Void> editButtonColumn = new TableColumn<>("Edit");
@@ -82,7 +83,7 @@ public class MakeTableView extends VBox{
 	}
 
 	
-
+	// Deprecated
 	@SuppressWarnings("exports")
 	public void addEditButton(Button buttonToAdd) {
 		
@@ -120,7 +121,7 @@ public class MakeTableView extends VBox{
 
 	}
 
-	
+	// Deprecated
 	@SuppressWarnings("exports")
 	public void addDetailButton(Button buttonToAdd) {
 		//TableColumn<BudgetCategory, Void> detailsButtonColumn = new TableColumn<>("Details");
@@ -150,7 +151,7 @@ public class MakeTableView extends VBox{
 //			budgetCategoryTable.getColumns().add(detailsButtonColumn);
 //		}
 	}
-	
+	// Deprecated
 	public void addItemEditButton() {
 		TableColumn<ExpenseItem, Void> editButtonColumn = new TableColumn<>("Edit");
 		Callback<TableColumn<ExpenseItem, Void>, TableCell<ExpenseItem, Void>> editButtonCell = new Callback<TableColumn<ExpenseItem, Void>, TableCell<ExpenseItem, Void>>() {
@@ -162,9 +163,22 @@ public class MakeTableView extends VBox{
 						editButton.setOnAction((ActionEvent event) -> {
 							ExpenseItem selectedItem = getTableView().getItems().get(getIndex());
                            // System.out.println("selectedData: " + selectedItem.getName());
-                            passItemData(selectedItem);
-                            Node detailsViewSource = (Node) event.getSource();
-                            Window detailsViewStage = detailsViewSource.getScene().getWindow();
+                            //passItemData(selectedItem);
+                            FXMLLoader loader = new FXMLLoader();
+                    		try {
+								VBox root = loader.load(new FileInputStream("src/application/CategoryDetailView.fxml"));
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+                    		CategoryDetailsController controller = (CategoryDetailsController) loader.getController();
+                    		
+                    		Node scene = (Node) event.getSource();
+                    		Scene stage = scene.getScene();
+                    		controller.applicationStage = (Stage) scene.getScene().getWindow();
+                    		controller.applicationStage.setScene(stage);
+                    		controller.setLabels(selectedItem);
+                    		controller.applicationStage.show();         		
                         });
 					}
 					@Override
@@ -216,5 +230,9 @@ public class MakeTableView extends VBox{
 	public Node getItemCategoryTable() {
 		return expenseItemTable;
 	}
-
+	
+	public ExpenseItem getExpenseItemData() {
+		return expenseItemTable.getSelectionModel().getSelectedItem();
+	}
+	
 }

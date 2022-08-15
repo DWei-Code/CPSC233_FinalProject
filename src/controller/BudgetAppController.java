@@ -152,6 +152,7 @@ public class BudgetAppController {
 		controller.applicationStage = this.applicationStage;
 		controller.setSelectedCategory(categoryToShow);
 		controller.showItemsTable();
+		controller.refreshCategoryData = this;
 
 		Scene scene = new Scene(root, 600, 400);
 
@@ -197,6 +198,13 @@ public class BudgetAppController {
 	 */
 	public ArrayList<BudgetCategory> getCategories() {
 		return categories;
+	}
+	
+	/**
+	 * empties this screens user message
+	 */
+	public void emptyUserMessage() {
+		userMessage.setText("");
 	}
 
 	/**
@@ -277,5 +285,7 @@ public class BudgetAppController {
 		}
 
 	}
+	
+	
 
 }

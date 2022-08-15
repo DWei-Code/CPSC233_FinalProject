@@ -1,20 +1,23 @@
 package models;
 
-import javafx.scene.control.Button;
-
 public abstract class ExpenseItem {
 	private double price;
 	private String name;
 	private int id;
-	public static int idGenerator = 1;
+	private static int idGenerator = 1;
+	// used for table purposes
+	private double monthlyExpense;
+	private String itemType;
+	
 	
 	public ExpenseItem(String name, double price) {
 		this.name = name;
 		this.price = price;
 		this.id = idGenerator++;
+		this.monthlyExpense = this.calculateMonthlyExpense();
 	}
 	
-	public abstract double getMonthlyExpense();
+	public abstract double calculateMonthlyExpense();
 
 	public double getPrice() {
 		return price;
@@ -34,6 +37,18 @@ public abstract class ExpenseItem {
 
 	public int getId() {
 		return id;
+	}
+
+	public String getItemType() {
+		return itemType;
+	}
+
+	public void setItemType(String itemType) {
+		this.itemType = itemType;
+	}
+
+	public double getMonthlyExpense() {
+		return monthlyExpense;
 	}
 	
 }

@@ -38,6 +38,7 @@ public class EditCategoryController {
 
 	@FXML
 	void switchToMainScene(ActionEvent event) {
+		refreshCategoryData.emptyUserMessage();
 		editCategoryStage.setScene(mainScene);
 	}
 
@@ -45,6 +46,7 @@ public class EditCategoryController {
 	void deleteCategory(ActionEvent event) {
 		editCategory = null;
 		refreshCategoryData.updateCategory(editCategory, beforeEditCategory);
+		refreshCategoryData.emptyUserMessage();
 		editCategoryStage.setScene(mainScene);
 	}
 
@@ -60,6 +62,7 @@ public class EditCategoryController {
 			editCategory.setMaxBudget(Double.parseDouble(selectedCategoryBudget.getText()));
 			refreshCategoryData.updateCategory(editCategory, beforeEditCategory);
 			// editUserMessage.setText("Category updated!");
+			refreshCategoryData.emptyUserMessage();
 			editCategoryStage.setScene(mainScene);
 		} else {
 			editUserMessage.setText("Category already exists,please try another category name");
