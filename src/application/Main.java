@@ -23,7 +23,7 @@ public class Main extends Application {
 			BudgetAppController controller = (BudgetAppController)loader.getController();
 			controller.applicationStage = primaryStage;
 			
-			Scene scene = new Scene(root,700,500);
+			Scene scene = new Scene(root,700,600);
 			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
 			primaryStage.setScene(scene);

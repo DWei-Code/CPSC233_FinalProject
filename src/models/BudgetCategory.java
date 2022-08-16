@@ -5,15 +5,16 @@ import java.util.ArrayList;
 
 import javafx.scene.control.Button;
 
-@SuppressWarnings("serial")
 public class BudgetCategory implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private double maxBudget;
 	private double budgetLeft;
 	private double overBudget;
 	private String name;
 	private ArrayList<ExpenseItem> listOfItems = new ArrayList<>();
-	private Button editButton;
-	private Button detailsButton;
 	
 	public BudgetCategory(String name, double budget) {
 		this.name = name;
@@ -116,24 +117,33 @@ public class BudgetCategory implements Serializable{
 		}
 	}
 
-	@SuppressWarnings("exports")
-	public Button getEditButton() {
-		return editButton;
-	}
-
-	@SuppressWarnings("exports")
-	public void setEditButton(Button editButton) {
-		this.editButton = editButton;
-	}
-	
-	@SuppressWarnings("exports")
-	public Button getDetailsButton() {
-		return detailsButton;
-	}
-
-	@SuppressWarnings("exports")
-	public void setDetailsButton(Button detailsButton) {
-		this.detailsButton = detailsButton;
+	public String toString() {
+		double totalSpending = 0.0;
+		StringBuilder budgetCategoryString = new StringBuilder();
+		budgetCategoryString.append("Budget category name: ");
+		budgetCategoryString.append(this.getName());
+		budgetCategoryString.append('\n');
+		budgetCategoryString.append("=======================");
+		budgetCategoryString.append('\n');
+		for(ExpenseItem categoriesItem : listOfItems) {
+			totalSpending += categoriesItem.getMonthlyExpense();
+			budgetCategoryString.append(categoriesItem.toString());
+			budgetCategoryString.append('\n');
+		}
+		budgetCategoryString.append('\t');
+		budgetCategoryString.append("Total spending: ");
+		budgetCategoryString.append(totalSpending);
+		budgetCategoryString.append('\n');
+		budgetCategoryString.append('\t');
+		budgetCategoryString.append("Max monthly budget: ");
+		budgetCategoryString.append(this.getMaxBudget()+ ",");
+		budgetCategoryString.append('\t');
+		budgetCategoryString.append("Budget left: ");
+		budgetCategoryString.append(this.getBudgetLeft()+ ",");
+		budgetCategoryString.append('\t');
+		budgetCategoryString.append("Over budget: ");
+		budgetCategoryString.append(this.getOverBudget());
+		return budgetCategoryString.toString();
 	}
 
 	

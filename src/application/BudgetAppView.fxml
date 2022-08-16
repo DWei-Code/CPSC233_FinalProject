@@ -10,6 +10,19 @@
 
 <VBox fx:id="rootVbox" prefHeight="299.0" prefWidth="461.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.BudgetAppController">
 	<children>
+      <MenuBar>
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#saveData" text="Save" />
+                  <MenuItem mnemonicParsing="false" onAction="#loadSavedData" text="Load File" />
+            </items>
+          </Menu>
+        </menus>
+         <VBox.margin>
+            <Insets bottom="10.0" />
+         </VBox.margin>
+      </MenuBar>
 		<HBox prefHeight="40.0" prefWidth="306.0">
 			<children>
 				<Label prefHeight="25.0" prefWidth="101.0" text="Budget category">
@@ -35,6 +48,23 @@
 				<Insets bottom="10.0" left="10.0" />
 			</VBox.margin>
 		</Button>
+      <HBox fx:id="categoryTableHBox" visible="false">
+         <VBox.margin>
+            <Insets left="10.0" />
+         </VBox.margin>
+         <children>
+            <Button mnemonicParsing="false" onAction="#goToEditCategoryStage" text="Edit Category">
+               <HBox.margin>
+                  <Insets left="10.0" top="20.0" />
+               </HBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#goToCategoryDetailStage" text="View Details">
+               <HBox.margin>
+                  <Insets left="10.0" top="20.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
 		<HBox prefHeight="40.0" prefWidth="200.0">
 			<children>
 				<Label prefHeight="25.0" prefWidth="101.0" text="Expense item">
@@ -96,10 +126,5 @@
 				<Insets left="10.0" top="10.0" />
 			</VBox.margin>
 		</Label>
-      <Button mnemonicParsing="false" onAction="#saveData" text="Save">
-         <VBox.margin>
-            <Insets left="10.0" />
-         </VBox.margin>
-      </Button>
 	</children>
 </VBox>

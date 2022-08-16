@@ -1,6 +1,12 @@
 package models;
 
-public abstract class ExpenseItem {
+import java.io.Serializable;
+
+public abstract class ExpenseItem implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private double price;
 	private String name;
 	private int id;
@@ -49,6 +55,23 @@ public abstract class ExpenseItem {
 
 	public double getMonthlyExpense() {
 		return monthlyExpense;
+	}
+	
+	public String toString() {
+		StringBuilder expenseItemString = new StringBuilder();
+		expenseItemString.append('\t');
+		expenseItemString.append("Item name: ");
+		expenseItemString.append(this.getName());
+		expenseItemString.append('\t');
+		expenseItemString.append("Item Price: ");
+		expenseItemString.append(this.getPrice()+ ",");
+		expenseItemString.append('\t');
+		expenseItemString.append("Payment occurrence: ");
+		expenseItemString.append(this.getItemType()+ ",");
+		expenseItemString.append('\t');
+		expenseItemString.append("Monthly Payment: ");
+		expenseItemString.append(this.getMonthlyExpense());
+		return expenseItemString.toString();
 	}
 	
 }

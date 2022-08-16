@@ -66,10 +66,10 @@ public class MakeTableView extends VBox{
 		budgetLeftColumn.setCellValueFactory(new PropertyValueFactory<>("budgetLeft"));
 		TableColumn<BudgetCategory, Double> overBudgetcolumn = new TableColumn<>("Over budget!");
 		overBudgetcolumn.setCellValueFactory(new PropertyValueFactory<>("overBudget"));
-		TableColumn<BudgetCategory, Button> editButtonColumn = new TableColumn<>("Action");
-		editButtonColumn.setCellValueFactory(new PropertyValueFactory<>("editButton"));
+		TableColumn<BudgetCategory, Button> editButtonColumn = new TableColumn<>("");
+		/*editButtonColumn.setCellValueFactory(new PropertyValueFactory<>("editButton"));
 		TableColumn<BudgetCategory, Button> detailsButtonColumn = new TableColumn<>("Action");
-		detailsButtonColumn.setCellValueFactory(new PropertyValueFactory<>("detailsButton"));
+		detailsButtonColumn.setCellValueFactory(new PropertyValueFactory<>("detailsButton"));*/
 		
 
 		budgetCategoryTable.getColumns().add(nameColumn);
@@ -77,7 +77,7 @@ public class MakeTableView extends VBox{
 		budgetCategoryTable.getColumns().add(budgetLeftColumn);
 		budgetCategoryTable.getColumns().add(overBudgetcolumn);
 		budgetCategoryTable.getColumns().add(editButtonColumn);
-		budgetCategoryTable.getColumns().add(detailsButtonColumn);
+		//budgetCategoryTable.getColumns().add(detailsButtonColumn);
 
 		budgetCategoryTable.setMaxSize(600, 200);
 	}
@@ -233,6 +233,10 @@ public class MakeTableView extends VBox{
 	
 	public ExpenseItem getExpenseItemData() {
 		return expenseItemTable.getSelectionModel().getSelectedItem();
+	}
+
+	public BudgetCategory getBudgetCategoryData() {
+		return budgetCategoryTable.getSelectionModel().getSelectedItem();
 	}
 	
 }
