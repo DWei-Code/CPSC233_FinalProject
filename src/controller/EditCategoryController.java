@@ -52,20 +52,29 @@ public class EditCategoryController {
 
 	@FXML
 	void updateCategory(ActionEvent event) {
-		String updatedCategoryName = selectedCategoryName.getText();
-		boolean updateCategory = utilities.checkBudgetCategoryDuplication(categoryList, updatedCategoryName);
-		if(updatedCategoryName.equals(beforeEditCategory.getName())) {
-			updateCategory = false;
-		}
-		if (!updateCategory) {
-			editCategory.setName(updatedCategoryName);
-			editCategory.setMaxBudget(Double.parseDouble(selectedCategoryBudget.getText()));
-			refreshCategoryData.updateCategory(editCategory, beforeEditCategory);
-			// editUserMessage.setText("Category updated!");
-			refreshCategoryData.emptyUserMessage();
-			editCategoryStage.setScene(mainScene);
+		if (!utilities.checkTextFieldEmpty(selectedCategoryName)
+				&& !utilities.checkTextFieldEmpty(selectedCategoryBudget)) {
+			String updatedCategoryName = selectedCategoryName.getText();
+			boolean updateCategory = utilities.checkBudgetCategoryDuplication(categoryList, updatedCategoryName);
+			if (updatedCategoryName.equals(beforeEditCategory.getName())) {
+				updateCategory = false;
+			}
+			if (!updateCategory) {
+				editCategory.setName(updatedCategoryName);
+				if (utilities.properNumberEntry(selectedCategoryBudget.getText())) {
+					editCategory.setMaxBudget(Double.parseDouble(selectedCategoryBudget.getText()));
+					refreshCategoryData.updateCategory(editCategory, beforeEditCategory);
+					// editUserMessage.setText("Category updated!");
+					refreshCategoryData.emptyUserMessage();
+					editCategoryStage.setScene(mainScene);
+				} else {
+					editUserMessage.setText("Please enter valid price. Positive integer or decimal numbers only");
+				}
+			} else {
+				editUserMessage.setText("Category already exists,please try another category name");
+			}
 		} else {
-			editUserMessage.setText("Category already exists,please try another category name");
+			editUserMessage.setText("Please enter all fields before saving edits");
 		}
 	}
 

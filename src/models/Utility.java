@@ -2,6 +2,9 @@ package models;
 
 import java.util.ArrayList;
 
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
+
 public class Utility {
 
 	/**
@@ -60,6 +63,15 @@ public class Utility {
 			}
 		}
 		return validNumber;
+	}
+	
+	@SuppressWarnings("exports")
+	public boolean checkTextFieldEmpty(TextField fieldToCheck) {
+		return fieldToCheck.getText().isBlank();
+	}
+	
+	public boolean isStringChoiceboxSelected(ChoiceBox<String> boxToCheck) {
+		return boxToCheck.getValue() != null;
 	}
 
 }

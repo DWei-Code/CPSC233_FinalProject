@@ -15,7 +15,6 @@ import javafx.scene.layout.VBox;
  *
  */
 public class Main extends Application {
-	@SuppressWarnings("exports")
 	@Override
 	public void start(Stage primaryStage) {
 		try {

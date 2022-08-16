@@ -78,7 +78,7 @@
 						<Insets left="10.0" />
 					</HBox.margin>
 				</Button>
-				<Button mnemonicParsing="false" onAction="#cancelEdit" text="Cancel">
+				<Button mnemonicParsing="false" onAction="#cancelEdit" text="Clear Entries">
 					<HBox.margin>
 						<Insets left="10.0" />
 					</HBox.margin>

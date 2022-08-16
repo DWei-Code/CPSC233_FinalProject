@@ -25,7 +25,7 @@ import models.WeeklyItem;
 public class CategoryDetailsController {
 
 	@SuppressWarnings("exports")
-	public Stage applicationStage;
+	public Stage categoryDetailStage;
 	@SuppressWarnings("exports")
 	public Scene mainScene;
 	public BudgetAppController refreshCategoryData;
@@ -64,7 +64,7 @@ public class CategoryDetailsController {
 	void sceneSwitch(ActionEvent event) {
 		refreshCategoryData.updateCategory(selectedCategory, selectedCategory);
 		refreshCategoryData.emptyUserMessage();
-		applicationStage.setScene(mainScene);
+		categoryDetailStage.setScene(mainScene);
 	}
 
 	public BudgetCategory getSelectedCategory() {
@@ -143,8 +143,8 @@ public class CategoryDetailsController {
 
 	@FXML
 	void saveItemEdit(ActionEvent event) {
-		if (!itemNameTextField.getText().isBlank() && !itemPriceTextField.getText().isBlank()
-				&& paymentTypeChoiceBox.getValue() != null) {
+		if (!utilities.checkTextFieldEmpty(itemNameTextField) && !utilities.checkTextFieldEmpty(itemPriceTextField)
+				&& utilities.isStringChoiceboxSelected(paymentTypeChoiceBox)) {
 			String itemName = itemNameTextField.getText();
 			String expenseItemPrice = itemPriceTextField.getText();
 			if (utilities.properNumberEntry(expenseItemPrice)) {
@@ -184,7 +184,7 @@ public class CategoryDetailsController {
 				updateItemsTable();
 				userMessage.setText("Table updated");
 			} else {
-				userMessage.setText("Please enter valid price. Integer or decimal numbers only");;
+				userMessage.setText("Please enter valid price. Positive integer or decimal numbers only");
 			}
 		} else {
 			userMessage.setText("Please enter all fields before saving the edits!");

@@ -175,10 +175,10 @@ public class MakeTableView extends VBox{
                     		
                     		Node scene = (Node) event.getSource();
                     		Scene stage = scene.getScene();
-                    		controller.applicationStage = (Stage) scene.getScene().getWindow();
-                    		controller.applicationStage.setScene(stage);
+                    		controller.categoryDetailStage = (Stage) scene.getScene().getWindow();
+                    		controller.categoryDetailStage.setScene(stage);
                     		controller.setLabels(selectedItem);
-                    		controller.applicationStage.show();         		
+                    		controller.categoryDetailStage.show();         		
                         });
 					}
 					@Override

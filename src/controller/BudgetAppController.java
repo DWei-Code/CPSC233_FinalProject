@@ -2,6 +2,7 @@ package controller;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -68,41 +69,50 @@ public class BudgetAppController {
 	 */
 	@FXML
 	void addCategory(ActionEvent event) {
-		String categoryName = budgetCategoryName.getText();
-		String categoryBudget = monthlyCategoryBudget.getText();
-		double categoryBudgetNumber = Double.parseDouble(categoryBudget);
-		// System.out.println("Category Added: " + categoryName + " Budget:" +
-		// categoryBudget);
+		if (!utilities.checkTextFieldEmpty(budgetCategoryName)
+				&& !utilities.checkTextFieldEmpty(monthlyCategoryBudget)) {
+			String categoryName = budgetCategoryName.getText();
+			String categoryBudget = monthlyCategoryBudget.getText();
+			if (utilities.properNumberEntry(categoryBudget)) {
+				double categoryBudgetNumber = Double.parseDouble(categoryBudget);
+				// System.out.println("Category Added: " + categoryName + " Budget:" +
+				// categoryBudget);
 
-		// unique budget categories only, if name repeats do not allow user to add.
-		boolean makeNewCategory = utilities.checkBudgetCategoryDuplication(categories, categoryName);
-		if (!makeNewCategory) {
-			BudgetCategory newCategory = new BudgetCategory(categoryName, categoryBudgetNumber);
-			categories.add(newCategory);
-			Button setDetailAction = new Button("View Details");
-			setDetailAction.setOnAction(detailsEvent -> {
-				try {
-					showDetailView(newCategory);
-				} catch (IOException e1) {
-					e1.printStackTrace();
+				// unique budget categories only, if name repeats do not allow user to add.
+				boolean makeNewCategory = utilities.checkBudgetCategoryDuplication(categories, categoryName);
+				if (!makeNewCategory) {
+					BudgetCategory newCategory = new BudgetCategory(categoryName, categoryBudgetNumber);
+					categories.add(newCategory);
+					Button setDetailAction = new Button("View Details");
+					setDetailAction.setOnAction(detailsEvent -> {
+						try {
+							showDetailView(newCategory);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					});
+					newCategory.setDetailsButton(setDetailAction);
+
+					Button setEditAction = new Button("Edit Category");
+					setEditAction.setOnAction(detailsEvent -> {
+						try {
+							showEditView(newCategory);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					});
+					newCategory.setEditButton(setEditAction);
+
+					updateTable(newCategory, setEditAction, setDetailAction);
+					updateChoiceBox();
+				} else {
+					userMessage.setText("Category already exists,please add unique category only!");
 				}
-			});
-			newCategory.setDetailsButton(setDetailAction);
-
-			Button setEditAction = new Button("Edit Category");
-			setEditAction.setOnAction(detailsEvent -> {
-				try {
-					showEditView(newCategory);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
-			newCategory.setEditButton(setEditAction);
-
-			updateTable(newCategory, setEditAction, setDetailAction);
-			updateChoiceBox();
+			} else {
+				userMessage.setText("Please enter valid budget. Positive integer or decimal numbers only");
+			}
 		} else {
-			userMessage.setText("Category already exists,please add unique category only!");
+			userMessage.setText("Please enter all fields for adding category");
 		}
 	}
 
@@ -149,7 +159,7 @@ public class BudgetAppController {
 		VBox root = loader.load(new FileInputStream("src/application/CategoryDetailView.fxml"));
 		CategoryDetailsController controller = (CategoryDetailsController) loader.getController();
 		controller.mainScene = applicationStage.getScene();
-		controller.applicationStage = this.applicationStage;
+		controller.categoryDetailStage = this.applicationStage;
 		controller.setSelectedCategory(categoryToShow);
 		controller.showItemsTable();
 		controller.refreshCategoryData = this;
@@ -199,7 +209,7 @@ public class BudgetAppController {
 	public ArrayList<BudgetCategory> getCategories() {
 		return categories;
 	}
-	
+
 	/**
 	 * empties this screens user message
 	 */
@@ -222,8 +232,8 @@ public class BudgetAppController {
 		boolean updateTable = true;
 		budgetCategoryTable.clearBudgetTable();
 		for (int i = 0; i < categories.size(); i++) {
-			//System.out.println(categories.get(i).getName());
-			//System.out.println(beforeEditCategory.getName());
+			// System.out.println(categories.get(i).getName());
+			// System.out.println(beforeEditCategory.getName());
 			if (categories.get(i).getName().equals(beforeEditCategory.getName())) {
 				if (editedCategory == null) {
 					categories.remove(i);
@@ -249,43 +259,63 @@ public class BudgetAppController {
 	 */
 	@FXML
 	void addItem(ActionEvent event) {
-		String itemName = expenseItemName.getText();
-		String expenseItemPrice = expenseItemCost.getText();
-		double itemPrice = Double.parseDouble(expenseItemPrice);
-		String categoryChoiceBoxSelected = categoryChoiceBox.getValue();
-		String paymentChoiceBoxSelected = paymentTypeChoiceBox.getValue();
-		System.out.println(
-				"Item Added: " + itemName + " Price:" + itemPrice + " Choice Box: " + categoryChoiceBoxSelected);
+		if (!utilities.checkTextFieldEmpty(expenseItemName) && !utilities.checkTextFieldEmpty(expenseItemCost)
+				&& utilities.isStringChoiceboxSelected(categoryChoiceBox)
+				&& utilities.isStringChoiceboxSelected(paymentTypeChoiceBox)) {
+			String categoryChoiceBoxSelected = categoryChoiceBox.getValue();
+			String paymentChoiceBoxSelected = paymentTypeChoiceBox.getValue();
+			String itemName = expenseItemName.getText();
+			String expenseItemPrice = expenseItemCost.getText();
+			if (utilities.properNumberEntry(expenseItemPrice)) {
+				double itemPrice = Double.parseDouble(expenseItemPrice);
 
-		ExpenseItem newItem = null;
-		// switch for determining which subclass of item to make depending on user
-		// choice
-		switch (paymentChoiceBoxSelected) {
-		case "One Time":
-			newItem = new OneTimeItem(itemName, itemPrice);
-			break;
-		case "Weekly":
-			newItem = new WeeklyItem(itemName, itemPrice);
-			break;
-		case "Bi-Weekly":
-			newItem = new BiWeeklyItem(itemName, itemPrice);
-			break;
-		default:
-			userMessage.setText("Please select item payment type!");
+				// System.out.println(
+				// "Item Added: " + itemName + " Price:" + itemPrice + " Choice Box: " +
+				// categoryChoiceBoxSelected);
 
-		}
+				ExpenseItem newItem = null;
+				// switch for determining which subclass of item to make depending on user
+				// choice
+				switch (paymentChoiceBoxSelected) {
+				case "One Time":
+					newItem = new OneTimeItem(itemName, itemPrice);
+					break;
+				case "Weekly":
+					newItem = new WeeklyItem(itemName, itemPrice);
+					break;
+				case "Bi-Weekly":
+					newItem = new BiWeeklyItem(itemName, itemPrice);
+					break;
+				default:
+					break;
 
-		budgetCategoryTable.clearBudgetTable();
-		for (BudgetCategory bc : categories) {
-			if (bc.getName().equals(categoryChoiceBoxSelected)) {
-				bc.getListOfItems().add(newItem);
-				userMessage.setText(bc.updateBudget(newItem));
+				}
+
+				budgetCategoryTable.clearBudgetTable();
+				for (BudgetCategory bc : categories) {
+					if (bc.getName().equals(categoryChoiceBoxSelected)) {
+						bc.getListOfItems().add(newItem);
+						userMessage.setText(bc.updateBudget(newItem));
+					}
+					budgetCategoryTable.updateBudgetTable(bc);
+				}
+			}else {
+				userMessage.setText("Please enter valid price. Positive integer or decimal numbers only");
 			}
-			budgetCategoryTable.updateBudgetTable(bc);
-		}
 
+		} else {
+			userMessage.setText(
+					"Please enter all item fields to add the item. Also a category must be added to add an item");
+		}
 	}
 	
-	
+	@FXML
+    void saveData(ActionEvent event) {
+		/*try {
+			FileOutputStream fos = new FileOutputStream("./res/BudgetData.dat");
+		}catch(IOException e){
+			e.printStackTrace();
+		}*/
+    }
 
 }

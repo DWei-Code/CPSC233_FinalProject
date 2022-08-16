@@ -1,10 +1,12 @@
 package models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javafx.scene.control.Button;
 
-public class BudgetCategory {
+@SuppressWarnings("serial")
+public class BudgetCategory implements Serializable{
 	private double maxBudget;
 	private double budgetLeft;
 	private double overBudget;
