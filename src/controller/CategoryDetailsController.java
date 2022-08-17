@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.BiWeeklyItem;
@@ -39,6 +40,9 @@ public class CategoryDetailsController {
 
 	@FXML
 	private Label categoryNameTextField;
+	
+	@FXML
+    private Label categoryBudgetLeft;
 
 	@FXML
 	private TextField itemNameTextField;
@@ -51,6 +55,9 @@ public class CategoryDetailsController {
 
 	@FXML
 	private VBox detailsVbox;
+	
+	@FXML
+    private HBox itemsTableHBox;
 
 	@FXML
 	private ChoiceBox<String> paymentTypeChoiceBox;
@@ -80,12 +87,13 @@ public class CategoryDetailsController {
 	 * selected BudgetCategory owns under its instance ArrayList.
 	 */
 	public void showItemsTable() {
-		detailsVbox.getChildren().add(1, itemsTable.getItemCategoryTable());
+		itemsTableHBox.getChildren().add(0, itemsTable.getItemCategoryTable());
 		itemsTable.clearItemTable();
 		for (ExpenseItem ei : selectedCategory.getListOfItems()) {
 			itemsTable.updateItemTable(ei);
 		}
 		categoryNameTextField.setText(selectedCategory.getName());
+		categoryBudgetLeft.setText(selectedCategory.getBudgetLeft() + "");
 	}
 
 	/**
@@ -96,6 +104,7 @@ public class CategoryDetailsController {
 		for (ExpenseItem ei : selectedCategory.getListOfItems()) {
 			itemsTable.updateItemTable(ei);
 		}
+		categoryBudgetLeft.setText(selectedCategory.getBudgetLeft() + "");
 	}
 
 	public void setLabels(ExpenseItem selectedItem) {

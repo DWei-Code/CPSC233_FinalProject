@@ -47,12 +47,14 @@ public class MakeTableView extends VBox{
 		itemTypeColumn.setCellValueFactory(new PropertyValueFactory<>("itemType"));
 		TableColumn<ExpenseItem, Double> monthlyCostColumn = new TableColumn<>("Monthly Cost");
 		monthlyCostColumn.setCellValueFactory(new PropertyValueFactory<>("monthlyExpense"));
+		TableColumn<ExpenseItem, Void> emptyColumn = new TableColumn<>("");
 		expenseItemTable.getColumns().add(nameColumn);
 		expenseItemTable.getColumns().add(itemPriceColumn);
 		expenseItemTable.getColumns().add(itemTypeColumn);
 		expenseItemTable.getColumns().add(monthlyCostColumn);
+		expenseItemTable.getColumns().add(emptyColumn);
 		
-		expenseItemTable.setMaxSize(400, 200);
+		expenseItemTable.setMaxSize(370, 200);
 
 	}
 	//TableColumn<BudgetCategory, Void> editButtonColumn = new TableColumn<>("Edit");
@@ -66,7 +68,7 @@ public class MakeTableView extends VBox{
 		budgetLeftColumn.setCellValueFactory(new PropertyValueFactory<>("budgetLeft"));
 		TableColumn<BudgetCategory, Double> overBudgetcolumn = new TableColumn<>("Over budget!");
 		overBudgetcolumn.setCellValueFactory(new PropertyValueFactory<>("overBudget"));
-		TableColumn<BudgetCategory, Button> editButtonColumn = new TableColumn<>("");
+		TableColumn<BudgetCategory, Void> emptyColumn = new TableColumn<>("");
 		/*editButtonColumn.setCellValueFactory(new PropertyValueFactory<>("editButton"));
 		TableColumn<BudgetCategory, Button> detailsButtonColumn = new TableColumn<>("Action");
 		detailsButtonColumn.setCellValueFactory(new PropertyValueFactory<>("detailsButton"));*/
@@ -76,7 +78,7 @@ public class MakeTableView extends VBox{
 		budgetCategoryTable.getColumns().add(budgetColumn);
 		budgetCategoryTable.getColumns().add(budgetLeftColumn);
 		budgetCategoryTable.getColumns().add(overBudgetcolumn);
-		budgetCategoryTable.getColumns().add(editButtonColumn);
+		budgetCategoryTable.getColumns().add(emptyColumn);
 		//budgetCategoryTable.getColumns().add(detailsButtonColumn);
 
 		budgetCategoryTable.setMaxSize(600, 200);

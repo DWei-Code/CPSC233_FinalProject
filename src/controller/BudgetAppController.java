@@ -166,7 +166,7 @@ public class BudgetAppController {
 		controller.showItemsTable();
 		controller.refreshCategoryData = this;
 
-		Scene scene = new Scene(root, 600, 400);
+		Scene scene = new Scene(root, 600, 500);
 
 		applicationStage.setScene(scene);
 		applicationStage.setTitle("Budget Tracker");
