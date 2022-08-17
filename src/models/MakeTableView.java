@@ -43,7 +43,7 @@ public class MakeTableView extends VBox{
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		TableColumn<ExpenseItem, Double> itemPriceColumn = new TableColumn<>("ItemPrice");
 		itemPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-		TableColumn<ExpenseItem, Double> itemTypeColumn = new TableColumn<>("Payment Occurence");
+		TableColumn<ExpenseItem, String> itemTypeColumn = new TableColumn<>("Payment Occurence");
 		itemTypeColumn.setCellValueFactory(new PropertyValueFactory<>("itemType"));
 		TableColumn<ExpenseItem, Double> monthlyCostColumn = new TableColumn<>("Monthly Cost");
 		monthlyCostColumn.setCellValueFactory(new PropertyValueFactory<>("monthlyExpense"));

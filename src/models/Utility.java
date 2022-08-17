@@ -50,6 +50,9 @@ public class Utility {
 		// loop through user entry to check its a decimal number or integer number
 		// special characters or double decimals are not allowed
 		for (char c : valueAsString.toCharArray()) {
+			if(valueAsString.charAt(0) == '-') {
+				validNumber = false;
+			}
 			if (!Character.isDigit(c)) {
 				validNumber = false;
 				if (c == '.' && decimalCount == 0) {

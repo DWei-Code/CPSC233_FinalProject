@@ -120,6 +120,8 @@ public class BudgetCategory implements Serializable{
 	public String toString() {
 		double totalSpending = 0.0;
 		StringBuilder budgetCategoryString = new StringBuilder();
+		budgetCategoryString.append("=======================");
+		budgetCategoryString.append('\n');
 		budgetCategoryString.append("Budget category name: ");
 		budgetCategoryString.append(this.getName());
 		budgetCategoryString.append('\n');

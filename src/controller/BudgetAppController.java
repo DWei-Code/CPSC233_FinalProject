@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -34,7 +35,7 @@ import models.WeeklyItem;
  * @author yunwei
  *
  */
-public class BudgetAppController{
+public class BudgetAppController {
 	@SuppressWarnings("exports")
 	public Stage applicationStage;
 	// table view for categories
@@ -47,9 +48,9 @@ public class BudgetAppController{
 
 	@FXML
 	private VBox rootVbox;
-	
-    @FXML
-    private HBox categoryTableHBox;
+
+	@FXML
+	private HBox categoryTableHBox;
 
 	@FXML
 	private TextField budgetCategoryName;
@@ -92,25 +93,17 @@ public class BudgetAppController{
 				if (!makeNewCategory) {
 					BudgetCategory newCategory = new BudgetCategory(categoryName, categoryBudgetNumber);
 					categories.add(newCategory);
-					/*Button setDetailAction = new Button("View Details");
-					setDetailAction.setOnAction(detailsEvent -> {
-						try {
-							showDetailView(newCategory);
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-					});
-					newCategory.setDetailsButton(setDetailAction);
-
-					Button setEditAction = new Button("Edit Category");
-					setEditAction.setOnAction(detailsEvent -> {
-						try {
-							showEditView(newCategory);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					});
-					newCategory.setEditButton(setEditAction);*/
+					/*
+					 * Button setDetailAction = new Button("View Details");
+					 * setDetailAction.setOnAction(detailsEvent -> { try {
+					 * showDetailView(newCategory); } catch (IOException e1) { e1.printStackTrace();
+					 * } }); newCategory.setDetailsButton(setDetailAction);
+					 * 
+					 * Button setEditAction = new Button("Edit Category");
+					 * setEditAction.setOnAction(detailsEvent -> { try { showEditView(newCategory);
+					 * } catch (IOException e) { e.printStackTrace(); } });
+					 * newCategory.setEditButton(setEditAction);
+					 */
 
 					updateTable(newCategory);
 					updateChoiceBox();
@@ -250,6 +243,7 @@ public class BudgetAppController{
 				if (editedCategory == null) {
 					categories.remove(i);
 					updateTable = false;
+					break;
 				} else {
 					updateTable = true;
 					categories.set(i, editedCategory);
@@ -311,7 +305,7 @@ public class BudgetAppController{
 					}
 					budgetCategoryTable.updateBudgetTable(bc);
 				}
-			}else {
+			} else {
 				userMessage.setText("Please enter valid price. Positive integer or decimal numbers only");
 			}
 
@@ -320,78 +314,81 @@ public class BudgetAppController{
 					"Please enter all item fields to add the item. Also a category must be added to add an item");
 		}
 	}
-	
+
 	@FXML
-    void goToEditCategoryStage(ActionEvent event) throws FileNotFoundException, IOException {
+	void goToEditCategoryStage(ActionEvent event) throws FileNotFoundException, IOException {
 		BudgetCategory selectedCategory = budgetCategoryTable.getBudgetCategoryData();
 		if (!utilities.isNull(selectedCategory)) {
 			this.showEditView(selectedCategory);
-		}else {
+		} else {
 			userMessage.setText("Please click on a row to select which category to edit");
 		}
-    }
+	}
 
-    @FXML
-    void goToCategoryDetailStage(ActionEvent event) throws FileNotFoundException, IOException {
-    	BudgetCategory selectedCategory = budgetCategoryTable.getBudgetCategoryData();
+	@FXML
+	void goToCategoryDetailStage(ActionEvent event) throws FileNotFoundException, IOException {
+		BudgetCategory selectedCategory = budgetCategoryTable.getBudgetCategoryData();
 		if (!utilities.isNull(selectedCategory)) {
 			this.showDetailView(selectedCategory);
-		}else {
+		} else {
 			userMessage.setText("Please click on a row to select which category to view details of");
 		}
-    }
-	
+	}
+
 	@FXML
-    void saveData(ActionEvent event) {
+	void saveData(ActionEvent event) {
 		try {
 			FileOutputStream fos = new FileOutputStream("./res/BudgetData.dat");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			
-			//for(BudgetCategory categoryToSave : categories) {
-				//BudgetCategory category = new BudgetCategory("test", 2);
-				oos.writeObject(categories);
-			//}
+
+			// for(BudgetCategory categoryToSave : categories) {
+			// BudgetCategory category = new BudgetCategory("test", 2);
+			oos.writeObject(categories);
+			// }
 			oos.close();
 			userMessage.setText("Your data has been saved!");
-			
+
 			PrintWriter outToText = null;
 			outToText = new PrintWriter(new FileWriter("./res/MonthlyBudget.txt"));
-			for(BudgetCategory categoryToSave : categories) {
+			for (BudgetCategory categoryToSave : categories) {
 				outToText.println(categoryToSave.toString());
 			}
 			outToText.close();
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
-    }
-	
+
+	}
+
 	@FXML
-    void loadSavedData(ActionEvent event) {
+	void loadSavedData(ActionEvent event) {
 		try {
-			FileInputStream fis = new FileInputStream("./res/BudgetData.dat");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			
-			//for(BudgetCategory categoryToSave : categories) {
-				//BudgetCategory category = new BudgetCategory("test", 2);
+			File dataFile = new File("./res/BudgetData.dat");
+			if (dataFile.exists() && dataFile.isFile()) {
+				FileInputStream fis = new FileInputStream(dataFile);
+				ObjectInputStream ois = new ObjectInputStream(fis);
+
+				// for(BudgetCategory categoryToSave : categories) {
+				// BudgetCategory category = new BudgetCategory("test", 2);
 				@SuppressWarnings("unchecked")
 				ArrayList<BudgetCategory> savedData = (ArrayList<BudgetCategory>) ois.readObject();
-			//}
-			ois.close();
-			//userMessage.setText("Your data has been saved!");
-			this.categories = savedData;
-			budgetCategoryTable.clearBudgetTable();
-			for(BudgetCategory categoryToLoad : categories) {
-				this.updateTable(categoryToLoad);
+				// }
+				ois.close();
+				// userMessage.setText("Your data has been saved!");
+				this.categories = savedData;
+				budgetCategoryTable.clearBudgetTable();
+				for (BudgetCategory categoryToLoad : categories) {
+					this.updateTable(categoryToLoad);
+				}
+				this.updateChoiceBox();
+			} else {
+				userMessage.setText("No previous saved data, cannot load the file");
 			}
-			this.updateChoiceBox();
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-    }
-	
+	}
+
 }
