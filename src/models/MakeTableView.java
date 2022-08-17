@@ -1,44 +1,43 @@
 package models;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-
-import controller.CategoryDetailsController;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.util.Callback;
 
 // reference learning material:
 // https://genotechies.medium.com/javafx-tableview-with-dynamically-filled-data-from-a-list-89ff6f8778e1
-public class MakeTableView extends VBox{
-	private TableView<BudgetCategory> budgetCategoryTable = new TableView<BudgetCategory>();
-	private TableView<ExpenseItem> expenseItemTable = new TableView<ExpenseItem>();
-
-	public MakeTableView(String tableType) {
-		switch (tableType) {
-
-		case "budgetTable":
-			makeBudgetTable();
-			break;
-		case "itemTable":
-			makeItemTable();
-			break;
-		default:
-			break;
-
-		}
+public abstract class MakeTableView extends VBox{
+	//private TableView<BudgetCategory> budgetCategoryTable = new TableView<BudgetCategory>();
+	//private TableView<ExpenseItem> expenseItemTable = new TableView<ExpenseItem>();
+	
+	//private TableView<?> newTable;
+	
+//	public MakeTableView(String tableType) {
+//		switch (tableType) {
+//
+//		case "budgetTable":
+//			makeBudgetTable();
+//			break;
+//		case "itemTable":
+//			makeItemTable();
+//			break;
+//		default:
+//			break;
+//
+//		}
+//	}
+	
+	public MakeTableView() {
+		makeTable();
+		//setTable();
 	}
+	
+	//public abstract void setTable();
+	public abstract void makeTable();
 
-	private void makeItemTable() {
+	/*private void makeItemTable() {
 		TableColumn<ExpenseItem, String> nameColumn = new TableColumn<>("Item Name");
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		TableColumn<ExpenseItem, Double> itemPriceColumn = new TableColumn<>("ItemPrice");
@@ -56,10 +55,9 @@ public class MakeTableView extends VBox{
 		
 		expenseItemTable.setMaxSize(370, 200);
 
-	}
-	//TableColumn<BudgetCategory, Void> editButtonColumn = new TableColumn<>("Edit");
-	//TableColumn<BudgetCategory, Void> detailsButtonColumn = new TableColumn<>("Details");
-	private void makeBudgetTable() {
+	}*/
+	
+	/*private void makeBudgetTable() {
 		TableColumn<BudgetCategory, String> nameColumn = new TableColumn<>("Budget Category");
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		TableColumn<BudgetCategory, Double> budgetColumn = new TableColumn<>("Max Budget");
@@ -69,9 +67,6 @@ public class MakeTableView extends VBox{
 		TableColumn<BudgetCategory, Double> overBudgetcolumn = new TableColumn<>("Over budget!");
 		overBudgetcolumn.setCellValueFactory(new PropertyValueFactory<>("overBudget"));
 		TableColumn<BudgetCategory, Void> emptyColumn = new TableColumn<>("");
-		/*editButtonColumn.setCellValueFactory(new PropertyValueFactory<>("editButton"));
-		TableColumn<BudgetCategory, Button> detailsButtonColumn = new TableColumn<>("Action");
-		detailsButtonColumn.setCellValueFactory(new PropertyValueFactory<>("detailsButton"));*/
 		
 
 		budgetCategoryTable.getColumns().add(nameColumn);
@@ -82,132 +77,18 @@ public class MakeTableView extends VBox{
 		//budgetCategoryTable.getColumns().add(detailsButtonColumn);
 
 		budgetCategoryTable.setMaxSize(600, 200);
-	}
-
+	}*/
 	
-	// Deprecated
-	@SuppressWarnings("exports")
-	public void addEditButton(Button buttonToAdd) {
-		
-		//TableColumn<BudgetCategory, Void> editButtonColumn = new TableColumn<>("Edit");
-		Callback<TableColumn<BudgetCategory, Void>, TableCell<BudgetCategory, Void>> editButtonCell = new Callback<TableColumn<BudgetCategory, Void>, TableCell<BudgetCategory, Void>>() {
-			@Override
-			public TableCell<BudgetCategory, Void> call(final TableColumn<BudgetCategory, Void> param) {
-				final TableCell<BudgetCategory, Void> cell = new TableCell<BudgetCategory, Void>() {
-					private Button tempButton = new Button("Edit");
-					{
-//						tempButton.setOnAction((ActionEvent event) -> {
-//							BudgetCategory data = getTableView().getItems().get(getIndex());
-//							buttonToAdd.getOnAction();
-//                            System.out.println("selectedData: " + data.toString());
-//                        });
-						//tempButton.setOnAction(buttonToAdd.getOnAction());
-					}
-					@Override
-					public void updateItem(Void item, boolean empty) {
-						super.updateItem(item, empty);
-						if (empty) {
-							setGraphic(null);
-						} else {
-							setGraphic(tempButton);
-						}
-					}
-				};
-				return cell;
-			}
-		};
-		//editButtonColumn.setCellFactory(editButtonCell);
-//		if (!budgetCategoryTable.getColumns().contains(editButtonColumn)) {
-//			budgetCategoryTable.getColumns().add(editButtonColumn);
-//		}
+	public abstract void updateTable(Object toAdd);
 
-	}
-
-	// Deprecated
-	@SuppressWarnings("exports")
-	public void addDetailButton(Button buttonToAdd) {
-		//TableColumn<BudgetCategory, Void> detailsButtonColumn = new TableColumn<>("Details");
-		Callback<TableColumn<BudgetCategory, Void>, TableCell<BudgetCategory, Void>> detailsButtonCell = new Callback<TableColumn<BudgetCategory, Void>, TableCell<BudgetCategory, Void>>() {
-			@Override
-			public TableCell<BudgetCategory, Void> call(final TableColumn<BudgetCategory, Void> param) {
-				final TableCell<BudgetCategory, Void> cell = new TableCell<BudgetCategory, Void>() {
-					private Button tempButton = new Button("Details");
-					{
-						tempButton.setOnAction(buttonToAdd.getOnAction());
-					}
-					@Override
-					public void updateItem(Void item, boolean empty) {
-						super.updateItem(item, empty);
-						if (empty) {
-							setGraphic(null);
-						} else {
-							setGraphic(tempButton);
-						}
-					}
-				};
-				return cell;
-			}
-		};
-		//detailsButtonColumn.setCellFactory(detailsButtonCell);
-//		if (!budgetCategoryTable.getColumns().contains(detailsButtonColumn)) {
-//			budgetCategoryTable.getColumns().add(detailsButtonColumn);
-//		}
-	}
-	// Deprecated
-	public void addItemEditButton() {
-		TableColumn<ExpenseItem, Void> editButtonColumn = new TableColumn<>("Edit");
-		Callback<TableColumn<ExpenseItem, Void>, TableCell<ExpenseItem, Void>> editButtonCell = new Callback<TableColumn<ExpenseItem, Void>, TableCell<ExpenseItem, Void>>() {
-			@Override
-			public TableCell<ExpenseItem, Void> call(final TableColumn<ExpenseItem, Void> param) {
-				final TableCell<ExpenseItem, Void> cell = new TableCell<ExpenseItem, Void>() {
-					private Button editButton = new Button("Edit");
-					{
-						editButton.setOnAction((ActionEvent event) -> {
-							ExpenseItem selectedItem = getTableView().getItems().get(getIndex());
-                           // System.out.println("selectedData: " + selectedItem.getName());
-                            //passItemData(selectedItem);
-                            FXMLLoader loader = new FXMLLoader();
-                    		try {
-								VBox root = loader.load(new FileInputStream("src/application/CategoryDetailView.fxml"));
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-                    		CategoryDetailsController controller = (CategoryDetailsController) loader.getController();
-                    		
-                    		Node scene = (Node) event.getSource();
-                    		Scene stage = scene.getScene();
-                    		controller.categoryDetailStage = (Stage) scene.getScene().getWindow();
-                    		controller.categoryDetailStage.setScene(stage);
-                    		controller.setLabels(selectedItem);
-                    		controller.categoryDetailStage.show();         		
-                        });
-					}
-					@Override
-					public void updateItem(Void item, boolean empty) {
-						super.updateItem(item, empty);
-						if (empty) {
-							setGraphic(null);
-						} else {
-							setGraphic(editButton);
-						}
-					}
-				};
-				return cell;
-			}
-		};
-		
-		editButtonColumn.setCellFactory(editButtonCell);
-		if (!expenseItemTable.getColumns().contains(editButtonColumn)) {
-			expenseItemTable.getColumns().add(editButtonColumn);
-		}
-	}
+	public abstract void clearTable();
 	
-	public void passItemData(ExpenseItem selectedItem) {
-		 System.out.println("selectedData: " + selectedItem.getName());
-	}
+	@SuppressWarnings("exports")
+	public abstract Node getTable();
+	
+	public abstract Object getData();
 
-	public void updateItemTable(ExpenseItem itemToAdd) {
+	/*public void updateItemTable(ExpenseItem itemToAdd) {
 		expenseItemTable.getItems().add(itemToAdd);
 	}
 
@@ -239,6 +120,6 @@ public class MakeTableView extends VBox{
 
 	public BudgetCategory getBudgetCategoryData() {
 		return budgetCategoryTable.getSelectionModel().getSelectedItem();
-	}
+	}*/
 	
 }

@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.BiWeeklyItem;
 import models.BudgetCategory;
+import models.BudgetCategoryTableView;
 import models.ExpenseItem;
 import models.FileUtility;
 import models.MakeTableView;
@@ -33,7 +34,8 @@ public class BudgetAppController {
 	@SuppressWarnings("exports")
 	public Stage applicationStage;
 	// table view for categories
-	private MakeTableView budgetCategoryTable = new MakeTableView("budgetTable");
+	//private MakeTableView budgetCategoryTable = new MakeTableView("budgetTable");
+	private MakeTableView budgetCategoryTable = new BudgetCategoryTableView();
 	private ArrayList<BudgetCategory> categories = new ArrayList<BudgetCategory>();
 	private Utility utilities = new Utility();
 	private FileUtility handleFile = new FileUtility();
@@ -182,10 +184,13 @@ public class BudgetAppController {
 		categoryTableHBox.setVisible(true);
 		categoryTableHBox.setPrefHeight(200);
 		categoryTableHBox.setPrefWidth(700);
-		if (!categoryTableHBox.getChildren().contains(budgetCategoryTable.getBudgetCategoryTable())) {
-			categoryTableHBox.getChildren().add(0, budgetCategoryTable.getBudgetCategoryTable());
+//--		if (!categoryTableHBox.getChildren().contains(budgetCategoryTable.getBudgetCategoryTable())) {
+//--		categoryTableHBox.getChildren().add(0, budgetCategoryTable.getBudgetCategoryTable());
+		if (!categoryTableHBox.getChildren().contains(budgetCategoryTable.getTable())) {
+			categoryTableHBox.getChildren().add(0, budgetCategoryTable.getTable());
 		}
-		budgetCategoryTable.updateBudgetTable(newCategory);
+		//-----budgetCategoryTable.updateBudgetTable(newCategory);
+		budgetCategoryTable.updateTable(newCategory);
 		// budgetCategoryTable.addEditButton(setEditAction);
 		// budgetCategoryTable.addDetailButton(setDetailAction);
 
@@ -219,7 +224,8 @@ public class BudgetAppController {
 		// matches on unique Category names an updates or deletes category based on user
 		// selection
 		boolean updateTable = true;
-		budgetCategoryTable.clearBudgetTable();
+		//------budgetCategoryTable.clearBudgetTable();
+		budgetCategoryTable.clearTable();
 		for (int i = 0; i < categories.size(); i++) {
 			// System.out.println(categories.get(i).getName());
 			// System.out.println(beforeEditCategory.getName());
@@ -234,7 +240,8 @@ public class BudgetAppController {
 				}
 			}
 			if (updateTable) {
-				budgetCategoryTable.updateBudgetTable(categories.get(i));
+				//--budgetCategoryTable.updateBudgetTable(categories.get(i));
+				budgetCategoryTable.updateTable(categories.get(i));
 			}
 
 		}
@@ -281,13 +288,15 @@ public class BudgetAppController {
 
 				}
 
-				budgetCategoryTable.clearBudgetTable();
+				//--budgetCategoryTable.clearBudgetTable();
+				budgetCategoryTable.clearTable();
 				for (BudgetCategory bc : categories) {
 					if (bc.getName().equals(categoryChoiceBoxSelected)) {
 						bc.getListOfItems().add(newItem);
 						userMessage.setText(bc.updateBudget(newItem));
 					}
-					budgetCategoryTable.updateBudgetTable(bc);
+					//--budgetCategoryTable.updateBudgetTable(bc);
+					budgetCategoryTable.updateTable(bc);
 				}
 			} else {
 				userMessage.setText("Please enter valid price. Positive integer or decimal numbers only");
@@ -301,7 +310,8 @@ public class BudgetAppController {
 
 	@FXML
 	void goToEditCategoryStage(ActionEvent event) throws FileNotFoundException, IOException {
-		BudgetCategory selectedCategory = budgetCategoryTable.getBudgetCategoryData();
+		BudgetCategory selectedCategory = (BudgetCategory) budgetCategoryTable.getData();
+				//budgetCategoryTable.getBudgetCategoryData();
 		if (!utilities.isNull(selectedCategory)) {
 			this.showEditView(selectedCategory);
 		} else {
@@ -311,7 +321,8 @@ public class BudgetAppController {
 
 	@FXML
 	void goToCategoryDetailStage(ActionEvent event) throws FileNotFoundException, IOException {
-		BudgetCategory selectedCategory = budgetCategoryTable.getBudgetCategoryData();
+		BudgetCategory selectedCategory = (BudgetCategory) budgetCategoryTable.getData();
+				//budgetCategoryTable.getBudgetCategoryData();
 		if (!utilities.isNull(selectedCategory)) {
 			this.showDetailView(selectedCategory);
 		} else {
@@ -331,7 +342,8 @@ public class BudgetAppController {
 		if(this.categories == null) {
 			userMessage.setText("No previous saved data, cannot load the file");
 		}else {
-			budgetCategoryTable.clearBudgetTable();
+			//-- budgetCategoryTable.clearBudgetTable();
+			budgetCategoryTable.clearTable();
 			for (BudgetCategory categoryToLoad : categories) {
 				this.updateTable(categoryToLoad);
 			}

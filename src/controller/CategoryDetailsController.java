@@ -11,7 +11,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.BiWeeklyItem;
 import models.BudgetCategory;
+import models.BudgetCategoryTableView;
 import models.ExpenseItem;
+import models.ExpenseItemTableView;
 import models.MakeTableView;
 import models.OneTimeItem;
 import models.Utility;
@@ -32,7 +34,8 @@ public class CategoryDetailsController {
 	public BudgetAppController refreshCategoryData;
 
 	private BudgetCategory selectedCategory;
-	private MakeTableView itemsTable = new MakeTableView("itemTable");
+	//private MakeTableView itemsTable = new MakeTableView("itemTable");
+	private MakeTableView itemsTable = new ExpenseItemTableView();
 	private Utility utilities = new Utility();
 
 	@FXML
@@ -87,10 +90,13 @@ public class CategoryDetailsController {
 	 * selected BudgetCategory owns under its instance ArrayList.
 	 */
 	public void showItemsTable() {
-		itemsTableHBox.getChildren().add(0, itemsTable.getItemCategoryTable());
-		itemsTable.clearItemTable();
+		//--itemsTableHBox.getChildren().add(0, itemsTable.getItemCategoryTable());
+		itemsTableHBox.getChildren().add(0, itemsTable.getTable());
+		//--itemsTable.clearItemTable();
+		itemsTable.clearTable();
 		for (ExpenseItem ei : selectedCategory.getListOfItems()) {
-			itemsTable.updateItemTable(ei);
+			//--itemsTable.updateItemTable(ei);
+			itemsTable.updateTable(ei);
 		}
 		categoryNameTextField.setText(selectedCategory.getName());
 		categoryBudgetLeft.setText(selectedCategory.getBudgetLeft() + "");
@@ -100,9 +106,11 @@ public class CategoryDetailsController {
 	 * used for updating this categories items table after an edit is saved
 	 */
 	public void updateItemsTable() {
-		itemsTable.clearItemTable();
+		//--itemsTable.clearItemTable();
+		itemsTable.clearTable();
 		for (ExpenseItem ei : selectedCategory.getListOfItems()) {
-			itemsTable.updateItemTable(ei);
+			//--itemsTable.updateItemTable(ei);
+			itemsTable.updateTable(ei);
 		}
 		categoryBudgetLeft.setText(selectedCategory.getBudgetLeft() + "");
 	}
@@ -116,7 +124,8 @@ public class CategoryDetailsController {
 	
 	@FXML
     void deleteSelectedItem(ActionEvent event) {
-		ExpenseItem selectedItem = itemsTable.getExpenseItemData();
+		ExpenseItem selectedItem = (ExpenseItem) itemsTable.getData();
+				//--itemsTable.getExpenseItemData();
 		if (!utilities.isNull(selectedItem)) {
 			for (int i = 0; i < selectedCategory.getListOfItems().size(); i++) {
 				if (selectedCategory.getListOfItems().get(i).getId() == selectedItem.getId()) {
@@ -133,7 +142,7 @@ public class CategoryDetailsController {
 
 	@FXML
 	void editItem(ActionEvent event) {
-		ExpenseItem selectedItem = itemsTable.getExpenseItemData();
+		ExpenseItem selectedItem = (ExpenseItem) itemsTable.getData();
 		if (!utilities.isNull(selectedItem)) {
 			itemNameTextField.setText(selectedItem.getName());
 			itemPriceTextField.setText(selectedItem.getPrice() + "");
