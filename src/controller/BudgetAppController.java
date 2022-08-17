@@ -1,15 +1,8 @@
 package controller;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
@@ -24,6 +17,7 @@ import javafx.stage.Stage;
 import models.BiWeeklyItem;
 import models.BudgetCategory;
 import models.ExpenseItem;
+import models.FileUtility;
 import models.MakeTableView;
 import models.OneTimeItem;
 import models.Utility;
@@ -42,6 +36,7 @@ public class BudgetAppController {
 	private MakeTableView budgetCategoryTable = new MakeTableView("budgetTable");
 	private ArrayList<BudgetCategory> categories = new ArrayList<BudgetCategory>();
 	private Utility utilities = new Utility();
+	private FileUtility handleFile = new FileUtility();
 
 	@FXML
 	private Label userMessage;
@@ -93,17 +88,6 @@ public class BudgetAppController {
 				if (!makeNewCategory) {
 					BudgetCategory newCategory = new BudgetCategory(categoryName, categoryBudgetNumber);
 					categories.add(newCategory);
-					/*
-					 * Button setDetailAction = new Button("View Details");
-					 * setDetailAction.setOnAction(detailsEvent -> { try {
-					 * showDetailView(newCategory); } catch (IOException e1) { e1.printStackTrace();
-					 * } }); newCategory.setDetailsButton(setDetailAction);
-					 * 
-					 * Button setEditAction = new Button("Edit Category");
-					 * setEditAction.setOnAction(detailsEvent -> { try { showEditView(newCategory);
-					 * } catch (IOException e) { e.printStackTrace(); } });
-					 * newCategory.setEditButton(setEditAction);
-					 */
 
 					updateTable(newCategory);
 					updateChoiceBox();
@@ -337,57 +321,21 @@ public class BudgetAppController {
 
 	@FXML
 	void saveData(ActionEvent event) {
-		try {
-			FileOutputStream fos = new FileOutputStream("./res/BudgetData.dat");
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-			// for(BudgetCategory categoryToSave : categories) {
-			// BudgetCategory category = new BudgetCategory("test", 2);
-			oos.writeObject(categories);
-			// }
-			oos.close();
-			userMessage.setText("Your data has been saved!");
-
-			PrintWriter outToText = null;
-			outToText = new PrintWriter(new FileWriter("./res/MonthlyBudget.txt"));
-			for (BudgetCategory categoryToSave : categories) {
-				outToText.println(categoryToSave.toString());
-			}
-			outToText.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		userMessage.setText(
+			handleFile.saveDataToFile("./res/BudgetData.dat", "./res/MonthlyBudget.txt", categories));
 	}
 
 	@FXML
 	void loadSavedData(ActionEvent event) {
-		try {
-			File dataFile = new File("./res/BudgetData.dat");
-			if (dataFile.exists() && dataFile.isFile()) {
-				FileInputStream fis = new FileInputStream(dataFile);
-				ObjectInputStream ois = new ObjectInputStream(fis);
-
-				// for(BudgetCategory categoryToSave : categories) {
-				// BudgetCategory category = new BudgetCategory("test", 2);
-				@SuppressWarnings("unchecked")
-				ArrayList<BudgetCategory> savedData = (ArrayList<BudgetCategory>) ois.readObject();
-				// }
-				ois.close();
-				// userMessage.setText("Your data has been saved!");
-				this.categories = savedData;
-				budgetCategoryTable.clearBudgetTable();
-				for (BudgetCategory categoryToLoad : categories) {
-					this.updateTable(categoryToLoad);
-				}
-				this.updateChoiceBox();
-			} else {
-				userMessage.setText("No previous saved data, cannot load the file");
+		this.categories = handleFile.loadSavedData("./res/BudgetData.dat");
+		if(this.categories == null) {
+			userMessage.setText("No previous saved data, cannot load the file");
+		}else {
+			budgetCategoryTable.clearBudgetTable();
+			for (BudgetCategory categoryToLoad : categories) {
+				this.updateTable(categoryToLoad);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			this.updateChoiceBox();
 		}
 	}
 
