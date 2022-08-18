@@ -18,3 +18,9 @@ Budget category name: mortgage
 	Item name: house	Item Price: 1000.0,	Payment occurrence: Bi-Weekly,	Monthly Payment: 2000.0
 	Total spending: 2000.0
 	Max monthly budget: 2000.0,	Budget left: 0.0,	Over budget: 0.0
+=======================
+Budget category name: school
+=======================
+	Item name: texbook	Item Price: 40.0,	Payment occurrence: One Time,	Monthly Payment: 40.0
+	Total spending: 40.0
+	Max monthly budget: 200.0,	Budget left: 160.0,	Over budget: 0.0

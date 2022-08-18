@@ -33,7 +33,7 @@ public class CategoryDetailsController {
 	public BudgetAppController refreshCategoryData;
 
 	private BudgetCategory selectedCategory;
-	//private MakeTableView itemsTable = new MakeTableView("itemTable");
+	// private MakeTableView itemsTable = new MakeTableView("itemTable");
 	private MakeTableView itemsTable = new ExpenseItemTableView();
 	private Utility utilities = new Utility();
 
@@ -42,9 +42,9 @@ public class CategoryDetailsController {
 
 	@FXML
 	private Label categoryNameTextField;
-	
+
 	@FXML
-    private Label categoryBudgetLeft;
+	private Label categoryBudgetLeft;
 
 	@FXML
 	private TextField itemNameTextField;
@@ -57,9 +57,9 @@ public class CategoryDetailsController {
 
 	@FXML
 	private VBox detailsVbox;
-	
+
 	@FXML
-    private HBox itemsTableHBox;
+	private HBox itemsTableHBox;
 
 	@FXML
 	private ChoiceBox<String> paymentTypeChoiceBox;
@@ -108,9 +108,10 @@ public class CategoryDetailsController {
 		}
 		categoryBudgetLeft.setText(selectedCategory.getBudgetLeft() + "");
 	}
-	
+
 	/**
 	 * sets the name, price and id of the item into the text fields
+	 * 
 	 * @param selectedItem the chosen item
 	 */
 	public void setLabels(ExpenseItem selectedItem) {
@@ -120,17 +121,18 @@ public class CategoryDetailsController {
 			selectedItemId.setText(selectedItem.getId() + "");
 		}
 	}
-	
+
 	/**
 	 * deletes the selected item within the table
+	 * 
 	 * @param event click event
 	 */
 	@FXML
-    void deleteSelectedItem(ActionEvent event) {
+	void deleteSelectedItem(ActionEvent event) {
 		/*
-		 *  if else nest: outer nest makes sure a row is selected within the table
-		 *  	inner if: finds the item by id to delete it
-		 */	
+		 * if else nest: outer nest makes sure a row is selected within the table inner
+		 * if: finds the item by id to delete it
+		 */
 		ExpenseItem selectedItem = (ExpenseItem) itemsTable.getData();
 		if (!utilities.isNull(selectedItem)) {
 			for (int i = 0; i < selectedCategory.getListOfItems().size(); i++) {
@@ -141,21 +143,23 @@ public class CategoryDetailsController {
 			selectedCategory.addBudget(selectedItem);
 			cancelEdit(event);
 			updateItemsTable();
-		}else {
+		} else {
 			userMessage.setText("Please click on a row to select which item to delete");
 		}
-    }
-	
+	}
+
 	/**
-	 * when edit item button is clicked the selected items data will populate in the field to edit 
+	 * when edit item button is clicked the selected items data will populate in the
+	 * field to edit
+	 * 
 	 * @param event click event
 	 */
 	@FXML
 	void editItem(ActionEvent event) {
 		/*
-		 *  if else nest: outer nest makes sure a row is selected within the table
-		 *  	inner if else: checks what instance the item is of to set the choice box
-		 */	
+		 * if else nest: outer nest makes sure a row is selected within the table inner
+		 * if else: checks what instance the item is of to set the choice box
+		 */
 		ExpenseItem selectedItem = (ExpenseItem) itemsTable.getData();
 		if (!utilities.isNull(selectedItem)) {
 			setLabels(selectedItem);
@@ -170,18 +174,20 @@ public class CategoryDetailsController {
 			userMessage.setText("Please click on a row to select which item to edit");
 		}
 	}
-	
+
 	/**
-	 * controls the save button on the screen to save item edits
-	 * checks all fields are filled and number entry is valid
+	 * controls the save button on the screen to save item edits checks all fields
+	 * are filled and number entry is valid
+	 * 
 	 * @param event click event
 	 */
 	@FXML
 	void saveItemEdit(ActionEvent event) {
 		/*
-		 *  if else nest: outer nest makes sure all user entries have a value
-		 *  	inner if else: checks to make sure the number entry is a valid positive integer or double
-		 */	
+		 * if else nest: outer nest makes sure all user entries have a value inner if
+		 * else: checks to make sure the number entry is a valid positive integer or
+		 * double
+		 */
 		if (!utilities.checkTextFieldEmpty(itemNameTextField) && !utilities.checkTextFieldEmpty(itemPriceTextField)
 				&& utilities.isStringChoiceboxSelected(paymentTypeChoiceBox)) {
 			String itemName = itemNameTextField.getText();
@@ -208,20 +214,26 @@ public class CategoryDetailsController {
 					userMessage.setText("Please select item payment type!");
 
 				}
-				ExpenseItem beforeEdit = null;
-				for (int i = 0; i < selectedCategory.getListOfItems().size(); i++) {
-					if (selectedCategory.getListOfItems().get(i).getId() == Integer
-							.parseInt(selectedItemId.getText())) {
-						beforeEdit = selectedCategory.getListOfItems().get(i);
-						selectedCategory.getListOfItems().set(i, editedItem);
+				// make sure the user is not trying to save information without selecting an
+				// item
+				if (!selectedItemId.getText().equals("")) {
+					ExpenseItem beforeEdit = null;
+					for (int i = 0; i < selectedCategory.getListOfItems().size(); i++) {
+						if (selectedCategory.getListOfItems().get(i).getId() == Integer
+								.parseInt(selectedItemId.getText())) {
+							beforeEdit = selectedCategory.getListOfItems().get(i);
+							selectedCategory.getListOfItems().set(i, editedItem);
+						}
 					}
+					// add the budget of the item before editing before calculating new budget
+					selectedCategory.addBudget(beforeEdit);
+					selectedCategory.updateBudget(editedItem);
+					cancelEdit(event);
+					updateItemsTable();
+					userMessage.setText("Table updated");
+				} else {
+					userMessage.setText("Cannot save, please select an item in the table and click edit item first");
 				}
-				// add the budget of the item before editing before calculating new budget
-				selectedCategory.addBudget(beforeEdit);
-				selectedCategory.updateBudget(editedItem);
-				cancelEdit(event);
-				updateItemsTable();
-				userMessage.setText("Table updated");
 			} else {
 				userMessage.setText("Please enter valid price. Positive integer or decimal numbers only");
 			}
@@ -229,9 +241,10 @@ public class CategoryDetailsController {
 			userMessage.setText("Please enter all fields before saving the edits!");
 		}
 	}
-	
+
 	/**
 	 * clears all field and table selections
+	 * 
 	 * @param event click event
 	 */
 	@FXML
@@ -240,6 +253,6 @@ public class CategoryDetailsController {
 		itemPriceTextField.setText("");
 		paymentTypeChoiceBox.setValue("");
 		itemsTable.clearSelection();
-		
+
 	}
 }

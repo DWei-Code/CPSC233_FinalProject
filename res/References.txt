@@ -1,0 +1,23 @@
+Locate fxml from another package: 
+https://stackoverflow.com/questions/22918418/how-to-locate-fxml-from-another-package
+
+Passing information between scenes: 
+https://dev.to/devtony101/javafx-3-ways-of-passing-information-between-scenes-1bm8
+
+Label hiding: 
+https://stackoverflow.com/questions/32451986/how-to-hide-or-deactivate-a-textfield-and-a-label-with-javafx#:~:text=To%20do%20so%20just%20go,used%20to%20hide%20any%20Label
+
+File I/O:  
+https://www.youtube.com/watch?v=S8ALWHZWylk
+https://stackoverflow.com/questions/1816673/how-do-i-check-if-a-file-exists-in-java
+https://stackoverflow.com/questions/16111496/java-how-can-i-write-my-arraylist-to-a-file-and-read-load-that-file-to-the
+Setting choicebox value: https://stackoverflow.com/questions/35374822/fxml-how-to-set-choicebox-default-value
+
+Changing scenes: https://www.youtube.com/watch?v=hcM-R-YOKkQ&t=187s
+
+Learning TableView:
+https://www.youtube.com/watch?v=b-0QMxCB2zI
+https://genotechies.medium.com/javafx-tableview-with-dynamically-filled-data-from-a-list-89ff6f8778e1
+
+unselecting table row:
+https://stackoverflow.com/questions/19490868/how-to-unselect-a-selected-table-row-upon-second-click-selection-in-javafx
