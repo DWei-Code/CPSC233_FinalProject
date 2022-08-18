@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.collections.FXCollections?>
 
 <VBox fx:id="rootVbox" prefHeight="299.0" prefWidth="461.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.BudgetAppController">
 	<children>
+      <MenuBar>
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#saveData" text="Save" />
+                  <MenuItem mnemonicParsing="false" onAction="#loadSavedData" text="Load File" />
+            </items>
+          </Menu>
+        </menus>
+         <VBox.margin>
+            <Insets bottom="10.0" />
+         </VBox.margin>
+      </MenuBar>
 		<HBox prefHeight="40.0" prefWidth="306.0">
 			<children>
 				<Label prefHeight="25.0" prefWidth="101.0" text="Budget category">
@@ -33,6 +48,23 @@
 				<Insets bottom="10.0" left="10.0" />
 			</VBox.margin>
 		</Button>
+      <HBox fx:id="categoryTableHBox" visible="false">
+         <VBox.margin>
+            <Insets left="10.0" />
+         </VBox.margin>
+         <children>
+            <Button mnemonicParsing="false" onAction="#goToEditCategoryStage" text="Edit Category">
+               <HBox.margin>
+                  <Insets left="10.0" top="20.0" />
+               </HBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#goToCategoryDetailStage" text="View Details">
+               <HBox.margin>
+                  <Insets left="10.0" top="20.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
 		<HBox prefHeight="40.0" prefWidth="200.0">
 			<children>
 				<Label prefHeight="25.0" prefWidth="101.0" text="Expense item">
@@ -56,25 +88,43 @@
 				<TextField fx:id="expenseItemCost" />
 			</children>
 		</HBox>
-      <HBox prefHeight="40.0" prefWidth="200.0">
-         <children>
-            <Label prefHeight="25.0" prefWidth="101.0" text="Item category">
-               <HBox.margin>
-                  <Insets left="10.0" />
-               </HBox.margin>
-            </Label>
-            <ChoiceBox fx:id="categoryChoiceBox" prefWidth="150.0" />
-         </children>
-      </HBox>
-      <Button mnemonicParsing="false" onAction="#addItem" prefHeight="25.0" prefWidth="70.0" text="Add Item">
-         <VBox.margin>
-            <Insets left="10.0" />
-         </VBox.margin>
-      </Button>
-      <Label fx:id="userMessage" textFill="RED">
-         <VBox.margin>
-            <Insets left="10.0" top="10.0" />
-         </VBox.margin>
-      </Label>
+		<HBox prefHeight="40.0" prefWidth="200.0">
+			<children>
+				<Label prefHeight="25.0" prefWidth="101.0" text="Item's category">
+					<HBox.margin>
+						<Insets left="10.0" />
+					</HBox.margin>
+				</Label>
+				<ChoiceBox fx:id="categoryChoiceBox" prefWidth="150.0" />
+			</children>
+		</HBox>
+		<HBox prefHeight="40.0" prefWidth="200.0">
+			<children>
+				<Label prefHeight="25.0" prefWidth="101.0" text="Item Payment type">
+					<HBox.margin>
+						<Insets left="10.0" />
+					</HBox.margin>
+				</Label>
+				<ChoiceBox fx:id="paymentTypeChoiceBox" prefWidth="150.0">
+					<items>
+						<FXCollections fx:factory="observableArrayList">
+							<String fx:value="One Time" />
+							<String fx:value="Weekly" />
+							<String fx:value="Bi-Weekly" />
+						</FXCollections>
+					</items>
+				</ChoiceBox>
+			</children>
+		</HBox>
+		<Button mnemonicParsing="false" onAction="#addItem" prefHeight="25.0" prefWidth="70.0" text="Add Item">
+			<VBox.margin>
+				<Insets left="10.0" />
+			</VBox.margin>
+		</Button>
+		<Label fx:id="userMessage" textFill="RED">
+			<VBox.margin>
+				<Insets left="10.0" top="10.0" />
+			</VBox.margin>
+		</Label>
 	</children>
 </VBox>

@@ -11,11 +11,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import models.BiWeeklyItem;
 import models.BudgetCategory;
+import models.BudgetCategoryTableView;
 import models.ExpenseItem;
+import models.FileUtility;
 import models.MakeTableView;
+import models.OneTimeItem;
+import models.Utility;
+import models.WeeklyItem;
 
 /**
  * Controller class for controlling UI from BudgetAppView.fxml
@@ -27,8 +34,10 @@ public class BudgetAppController {
 	@SuppressWarnings("exports")
 	public Stage applicationStage;
 	// table view for categories
-	private MakeTableView budgetCategoryTable = new MakeTableView("budgetTable");
+	private MakeTableView budgetCategoryTable = new BudgetCategoryTableView();
 	private ArrayList<BudgetCategory> categories = new ArrayList<BudgetCategory>();
+	private Utility utilities = new Utility();
+	private FileUtility handleFile = new FileUtility();
 
 	@FXML
 	private Label userMessage;
@@ -37,10 +46,16 @@ public class BudgetAppController {
 	private VBox rootVbox;
 
 	@FXML
+	private HBox categoryTableHBox;
+
+	@FXML
 	private TextField budgetCategoryName;
 
 	@FXML
 	private ChoiceBox<String> categoryChoiceBox;
+
+	@FXML
+	private ChoiceBox<String> paymentTypeChoiceBox;
 
 	@FXML
 	private TextField monthlyCategoryBudget;
@@ -53,52 +68,41 @@ public class BudgetAppController {
 
 	/**
 	 * upon clicking Add Category button, create a new BudgetCategory with user
-	 * entries and 2 buttons and add them to a row in a table created by
+	 * entries and add them to a row in a table created by
 	 * MakeTableView class.
 	 * 
 	 * @param event on button click event
 	 */
 	@FXML
 	void addCategory(ActionEvent event) {
-		String categoryName = budgetCategoryName.getText();
-		String categoryBudget = monthlyCategoryBudget.getText();
-		double categoryBudgetNumber = Double.parseDouble(categoryBudget);
-		//System.out.println("Category Added: " + categoryName + " Budget:" + categoryBudget);
+		/*
+		 *  if else nest: outer nest makes sure all user entries have a value
+		 *  	inner if else: checks to make sure the number entry is a valid positive integer or double
+		 *  		most inner if else: checks to makes sure there are no category name duplicates
+		 */			
+		if (!utilities.checkTextFieldEmpty(budgetCategoryName)
+				&& !utilities.checkTextFieldEmpty(monthlyCategoryBudget)) {
+			String categoryName = budgetCategoryName.getText();
+			String categoryBudget = monthlyCategoryBudget.getText();
+			if (utilities.properNumberEntry(categoryBudget)) {
+				double categoryBudgetNumber = Double.parseDouble(categoryBudget);
 
-		// unique budget categories only, if name repeats do not allow user to add.
-		boolean makeNewCategory = true;
-		for (BudgetCategory checkName : categories) {
-			if (checkName.getName().equals(categoryName)) {
-				makeNewCategory = false;
+				// unique budget categories only, if name repeats do not allow user to add.
+				boolean makeNewCategory = utilities.checkBudgetCategoryDuplication(categories, categoryName);
+				if (!makeNewCategory) {
+					BudgetCategory newCategory = new BudgetCategory(categoryName, categoryBudgetNumber);
+					categories.add(newCategory);
+
+					updateTable(newCategory);
+					updateChoiceBox();
+				} else {
+					userMessage.setText("Category already exists,please add unique category only!");
+				}
+			} else {
+				userMessage.setText("Please enter valid budget. Positive integer or decimal numbers only");
 			}
-		}
-		if (makeNewCategory) {
-			BudgetCategory newCategory = new BudgetCategory(categoryName, categoryBudgetNumber);
-			categories.add(newCategory);
-			Button setDetailAction = new Button("Details");
-			setDetailAction.setOnAction(detailsEvent -> {
-				try {
-					showDetailView(newCategory);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			});
-			newCategory.setDetailsButton(setDetailAction);
-
-			Button setEditAction = new Button("Edit Category");
-			setEditAction.setOnAction(detailsEvent -> {
-				try {
-					showEditView(newCategory);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
-			newCategory.setEditButton(setEditAction);
-
-			updateTable(newCategory);
-			updateChoiceBox();
 		} else {
-			userMessage.setText("Category already exists,please add unique category only!");
+			userMessage.setText("Please enter all fields for adding category");
 		}
 	}
 
@@ -117,6 +121,7 @@ public class BudgetAppController {
 		EditCategoryController controller = (EditCategoryController) loader.getController();
 		controller.mainScene = applicationStage.getScene();
 		controller.editCategoryStage = this.applicationStage;
+		controller.categoryList = this.categories;
 		controller.setEditCategory(categoryToEdit);
 		controller.setBeforeEditCategory(categoryToEdit);
 		controller.setViewFields(categoryToEdit);
@@ -144,11 +149,12 @@ public class BudgetAppController {
 		VBox root = loader.load(new FileInputStream("src/application/CategoryDetailView.fxml"));
 		CategoryDetailsController controller = (CategoryDetailsController) loader.getController();
 		controller.mainScene = applicationStage.getScene();
-		controller.applicationStage = this.applicationStage;
+		controller.categoryDetailStage = this.applicationStage;
 		controller.setSelectedCategory(categoryToShow);
 		controller.showItemsTable();
+		controller.refreshCategoryData = this;
 
-		Scene scene = new Scene(root, 600, 400);
+		Scene scene = new Scene(root, 600, 500);
 
 		applicationStage.setScene(scene);
 		applicationStage.setTitle("Budget Tracker");
@@ -175,10 +181,13 @@ public class BudgetAppController {
 	 */
 	private void updateTable(BudgetCategory newCategory) {
 		// add new table if it does not exist otherwise add items to table
-		if (!rootVbox.getChildren().contains(budgetCategoryTable.getBudgetCategoryTable())) {
-			rootVbox.getChildren().add(3, budgetCategoryTable.getBudgetCategoryTable());
-		}
-		budgetCategoryTable.updateBudgetTable(newCategory);
+		categoryTableHBox.setVisible(true);
+		categoryTableHBox.setPrefHeight(200);
+		categoryTableHBox.setPrefWidth(700);
+		if (!categoryTableHBox.getChildren().contains(budgetCategoryTable.getTable())) {
+			categoryTableHBox.getChildren().add(0, budgetCategoryTable.getTable());
+		}	
+		budgetCategoryTable.updateTable(newCategory);
 	}
 
 	/**
@@ -187,6 +196,13 @@ public class BudgetAppController {
 	 */
 	public ArrayList<BudgetCategory> getCategories() {
 		return categories;
+	}
+
+	/**
+	 * empties this screens user message
+	 */
+	public void emptyUserMessage() {
+		userMessage.setText("");
 	}
 
 	/**
@@ -199,15 +215,22 @@ public class BudgetAppController {
 	 * @param beforeEditCategory before it was edited information
 	 */
 	public void updateCategory(BudgetCategory editedCategory, BudgetCategory beforeEditCategory) {
-		// this is probably not the best way to match, thinking of adding an ID to
-		// budget category for
-		// future iterations.
-		budgetCategoryTable.clearBudgetTable();
+		// matches on unique Category names an updates or deletes category based on user
+		// selection
+		budgetCategoryTable.clearTable();
 		for (int i = 0; i < categories.size(); i++) {
 			if (categories.get(i).getName().equals(beforeEditCategory.getName())) {
-				categories.set(i, editedCategory);
+				if (editedCategory == null) {
+					categories.remove(i);
+				} else {
+					categories.set(i, editedCategory);
+				}
 			}
-			budgetCategoryTable.updateBudgetTable(categories.get(i));
+
+		}
+		// update table after the ArrayList has been updated
+		for (int i = 0; i < categories.size(); i++) {
+			budgetCategoryTable.updateTable(categories.get(i));
 		}
 		updateChoiceBox();
 	}
@@ -220,23 +243,117 @@ public class BudgetAppController {
 	 */
 	@FXML
 	void addItem(ActionEvent event) {
-		String itemName = expenseItemName.getText();
-		String expenseItemPrice = expenseItemCost.getText();
-		double itemPrice = Double.parseDouble(expenseItemPrice);
-		String choiceBoxSelected = categoryChoiceBox.getValue();
-		System.out.println("Item Added: " + itemName + " Price:" + itemPrice + " Choice Box: " + choiceBoxSelected);
+		/*
+		 *  if else nest: outer nest makes sure all user entries have a value
+		 *  	inner if else: checks to make sure the number entry is a valid positive integer or double
+		 */	
+		if (!utilities.checkTextFieldEmpty(expenseItemName) && !utilities.checkTextFieldEmpty(expenseItemCost)
+				&& utilities.isStringChoiceboxSelected(categoryChoiceBox)
+				&& utilities.isStringChoiceboxSelected(paymentTypeChoiceBox)) {
+			String categoryChoiceBoxSelected = categoryChoiceBox.getValue();
+			String paymentChoiceBoxSelected = paymentTypeChoiceBox.getValue();
+			String itemName = expenseItemName.getText();
+			String expenseItemPrice = expenseItemCost.getText();
+			if (utilities.properNumberEntry(expenseItemPrice)) {
+				double itemPrice = Double.parseDouble(expenseItemPrice);
 
-		ExpenseItem newItem = new ExpenseItem(itemName, itemPrice);
+				ExpenseItem newItem = null;
+				// switch for determining which subclass of item to make depending on user
+				// choice
+				switch (paymentChoiceBoxSelected) {
+				case "One Time":
+					newItem = new OneTimeItem(itemName, itemPrice);
+					break;
+				case "Weekly":
+					newItem = new WeeklyItem(itemName, itemPrice);
+					break;
+				case "Bi-Weekly":
+					newItem = new BiWeeklyItem(itemName, itemPrice);
+					break;
+				default:
+					break;
 
-		budgetCategoryTable.clearBudgetTable();
-		for (BudgetCategory bc : categories) {
-			if (bc.getName().equals(choiceBoxSelected)) {
-				bc.getListOfItems().add(newItem);
-				userMessage.setText(bc.updateBudget(newItem));
+				}
+				
+				budgetCategoryTable.clearTable();
+				for (BudgetCategory bc : categories) {
+					if (bc.getName().equals(categoryChoiceBoxSelected)) {
+						bc.getListOfItems().add(newItem);
+						userMessage.setText(bc.updateBudget(newItem));
+					}
+					budgetCategoryTable.updateTable(bc);
+				}
+			} else {
+				userMessage.setText("Please enter valid price. Positive integer or decimal numbers only");
 			}
-			budgetCategoryTable.updateBudgetTable(bc);
-		}
 
+		} else {
+			userMessage.setText(
+					"Please enter all item fields to add the item. Also a category must be added to add an item");
+		}
+	}
+	
+	/**
+	 * handles the button click for edit category button, calls on showEditView() 
+	 * to direct the stage to the desires fxml file. Error message is shown if no row is selected in the table
+	 * @param event click event
+	 * @throws FileNotFoundException when file is not found
+	 * @throws IOException any file errors
+	 */
+	@FXML
+	void goToEditCategoryStage(ActionEvent event) throws FileNotFoundException, IOException {
+		BudgetCategory selectedCategory = (BudgetCategory) budgetCategoryTable.getData();
+		if (!utilities.isNull(selectedCategory)) {
+			this.showEditView(selectedCategory);
+		} else {
+			userMessage.setText("Please click on a row to select which category to edit");
+		}
+	}
+	
+	/**
+	 * handles the button click for view details button, calls on showDetailView() 
+	 * to direct the stage to the desires fxml file. Error message is shown if no row is selected in the table
+	 * @param event click event
+	 * @throws FileNotFoundException when file is not found
+	 * @throws IOException any file errors
+	 */
+	@FXML
+	void goToCategoryDetailStage(ActionEvent event) throws FileNotFoundException, IOException {
+		BudgetCategory selectedCategory = (BudgetCategory) budgetCategoryTable.getData();
+		if (!utilities.isNull(selectedCategory)) {
+			this.showDetailView(selectedCategory);
+		} else {
+			userMessage.setText("Please click on a row to select which category to view details of");
+		}
+	}
+	
+	/**
+	 * uses the FileUtility class to save the current categories ArrayList to file under the res folder
+	 * @param event mouse click
+	 */
+	@FXML
+	void saveData(ActionEvent event) {
+		userMessage.setText(
+			handleFile.saveDataToFile("./res/BudgetData.dat", "./res/MonthlyBudget.txt", categories));
+	}
+	
+	/**
+	 * uses the FileUtility class to load the last saves categories ArrayList to this classes ArrayList variable categories
+	 * then updates the table with all the values from the loaded file
+	 * @param event click event
+	 */
+	@FXML
+	void loadSavedData(ActionEvent event) {
+		this.categories = handleFile.loadSavedData("./res/BudgetData.dat");
+		if(this.categories == null) {
+			userMessage.setText("No previous saved data, cannot load the file");
+		}else {
+			budgetCategoryTable.clearTable();
+			for (BudgetCategory categoryToLoad : categories) {
+				this.updateTable(categoryToLoad);
+			}
+			this.updateChoiceBox();
+		}
 	}
 
 }
