@@ -1,125 +1,56 @@
 package models;
 
 import javafx.scene.Node;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-
-// reference learning material:
-// https://genotechies.medium.com/javafx-tableview-with-dynamically-filled-data-from-a-list-89ff6f8778e1
+/**
+ * Abstract class to initialize a table view of either type BudgetCategory or ExpenseItem
+ * Extends Vbox since the TableView uses it to make the table
+ * @author yunwei
+ * reference learning material:
+ * https://genotechies.medium.com/javafx-tableview-with-dynamically-filled-data-from-a-list-89ff6f8778e1
+ */
 public abstract class MakeTableView extends VBox{
-	//private TableView<BudgetCategory> budgetCategoryTable = new TableView<BudgetCategory>();
-	//private TableView<ExpenseItem> expenseItemTable = new TableView<ExpenseItem>();
-	
-	//private TableView<?> newTable;
-	
-//	public MakeTableView(String tableType) {
-//		switch (tableType) {
-//
-//		case "budgetTable":
-//			makeBudgetTable();
-//			break;
-//		case "itemTable":
-//			makeItemTable();
-//			break;
-//		default:
-//			break;
-//
-//		}
-//	}
-	
+
+	/**
+	 * no args constructor used to call makeTable to initialize and add columns to the table
+	 */
 	public MakeTableView() {
 		makeTable();
 		//setTable();
 	}
 	
-	//public abstract void setTable();
+	/**
+	 * used to initialize the columns of the table
+	 */
 	public abstract void makeTable();
-
-	/*private void makeItemTable() {
-		TableColumn<ExpenseItem, String> nameColumn = new TableColumn<>("Item Name");
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		TableColumn<ExpenseItem, Double> itemPriceColumn = new TableColumn<>("ItemPrice");
-		itemPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-		TableColumn<ExpenseItem, String> itemTypeColumn = new TableColumn<>("Payment Occurence");
-		itemTypeColumn.setCellValueFactory(new PropertyValueFactory<>("itemType"));
-		TableColumn<ExpenseItem, Double> monthlyCostColumn = new TableColumn<>("Monthly Cost");
-		monthlyCostColumn.setCellValueFactory(new PropertyValueFactory<>("monthlyExpense"));
-		TableColumn<ExpenseItem, Void> emptyColumn = new TableColumn<>("");
-		expenseItemTable.getColumns().add(nameColumn);
-		expenseItemTable.getColumns().add(itemPriceColumn);
-		expenseItemTable.getColumns().add(itemTypeColumn);
-		expenseItemTable.getColumns().add(monthlyCostColumn);
-		expenseItemTable.getColumns().add(emptyColumn);
-		
-		expenseItemTable.setMaxSize(370, 200);
-
-	}*/
 	
-	/*private void makeBudgetTable() {
-		TableColumn<BudgetCategory, String> nameColumn = new TableColumn<>("Budget Category");
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		TableColumn<BudgetCategory, Double> budgetColumn = new TableColumn<>("Max Budget");
-		budgetColumn.setCellValueFactory(new PropertyValueFactory<>("maxBudget"));
-		TableColumn<BudgetCategory, Double> budgetLeftColumn = new TableColumn<>("Available budget");
-		budgetLeftColumn.setCellValueFactory(new PropertyValueFactory<>("budgetLeft"));
-		TableColumn<BudgetCategory, Double> overBudgetcolumn = new TableColumn<>("Over budget!");
-		overBudgetcolumn.setCellValueFactory(new PropertyValueFactory<>("overBudget"));
-		TableColumn<BudgetCategory, Void> emptyColumn = new TableColumn<>("");
-		
-
-		budgetCategoryTable.getColumns().add(nameColumn);
-		budgetCategoryTable.getColumns().add(budgetColumn);
-		budgetCategoryTable.getColumns().add(budgetLeftColumn);
-		budgetCategoryTable.getColumns().add(overBudgetcolumn);
-		budgetCategoryTable.getColumns().add(emptyColumn);
-		//budgetCategoryTable.getColumns().add(detailsButtonColumn);
-
-		budgetCategoryTable.setMaxSize(600, 200);
-	}*/
-	
+	/**
+	 * updates the table with a new object, object must match the class the table is looking for
+	 * @param toAdd object to extract values from its instance variables to add to the tables columns
+	 */
 	public abstract void updateTable(Object toAdd);
-
+	
+	/**
+	 * clears the table of its data when a table calls this
+	 */
 	public abstract void clearTable();
 	
+	/**
+	 * 
+	 * @return the table that calls this
+	 */
 	@SuppressWarnings("exports")
 	public abstract Node getTable();
 	
+	/**
+	 * 
+	 * @return the object from the row that was selected within the table
+	 */
 	public abstract Object getData();
-
-	/*public void updateItemTable(ExpenseItem itemToAdd) {
-		expenseItemTable.getItems().add(itemToAdd);
-	}
-
-	public void clearItemTable() {
-		expenseItemTable.getItems().clear();
-	}
-
-	public void updateBudgetTable(BudgetCategory categoryToAdd) {
-		budgetCategoryTable.getItems().add(categoryToAdd);
-	}
-
-	public void clearBudgetTable() {
-		budgetCategoryTable.getItems().clear();
-	}
-
-	@SuppressWarnings("exports")
-	public Node getBudgetCategoryTable() {
-		return budgetCategoryTable;
-	}
-
-	@SuppressWarnings("exports")
-	public Node getItemCategoryTable() {
-		return expenseItemTable;
-	}
 	
-	public ExpenseItem getExpenseItemData() {
-		return expenseItemTable.getSelectionModel().getSelectedItem();
-	}
-
-	public BudgetCategory getBudgetCategoryData() {
-		return budgetCategoryTable.getSelectionModel().getSelectedItem();
-	}*/
+	/**
+	 * clears selected row
+	 */
+	public abstract void clearSelection();
 	
 }

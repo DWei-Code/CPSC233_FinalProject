@@ -11,7 +11,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.BiWeeklyItem;
 import models.BudgetCategory;
-import models.BudgetCategoryTableView;
 import models.ExpenseItem;
 import models.ExpenseItemTableView;
 import models.MakeTableView;
@@ -90,12 +89,9 @@ public class CategoryDetailsController {
 	 * selected BudgetCategory owns under its instance ArrayList.
 	 */
 	public void showItemsTable() {
-		//--itemsTableHBox.getChildren().add(0, itemsTable.getItemCategoryTable());
 		itemsTableHBox.getChildren().add(0, itemsTable.getTable());
-		//--itemsTable.clearItemTable();
 		itemsTable.clearTable();
 		for (ExpenseItem ei : selectedCategory.getListOfItems()) {
-			//--itemsTable.updateItemTable(ei);
 			itemsTable.updateTable(ei);
 		}
 		categoryNameTextField.setText(selectedCategory.getName());
@@ -106,26 +102,36 @@ public class CategoryDetailsController {
 	 * used for updating this categories items table after an edit is saved
 	 */
 	public void updateItemsTable() {
-		//--itemsTable.clearItemTable();
 		itemsTable.clearTable();
 		for (ExpenseItem ei : selectedCategory.getListOfItems()) {
-			//--itemsTable.updateItemTable(ei);
 			itemsTable.updateTable(ei);
 		}
 		categoryBudgetLeft.setText(selectedCategory.getBudgetLeft() + "");
 	}
-
+	
+	/**
+	 * sets the name, price and id of the item into the text fields
+	 * @param selectedItem the chosen item
+	 */
 	public void setLabels(ExpenseItem selectedItem) {
 		if (selectedItem != null) {
 			itemNameTextField.setText(selectedItem.getName());
 			itemPriceTextField.setText(selectedItem.getPrice() + "");
+			selectedItemId.setText(selectedItem.getId() + "");
 		}
 	}
 	
+	/**
+	 * deletes the selected item within the table
+	 * @param event click event
+	 */
 	@FXML
     void deleteSelectedItem(ActionEvent event) {
+		/*
+		 *  if else nest: outer nest makes sure a row is selected within the table
+		 *  	inner if: finds the item by id to delete it
+		 */	
 		ExpenseItem selectedItem = (ExpenseItem) itemsTable.getData();
-				//--itemsTable.getExpenseItemData();
 		if (!utilities.isNull(selectedItem)) {
 			for (int i = 0; i < selectedCategory.getListOfItems().size(); i++) {
 				if (selectedCategory.getListOfItems().get(i).getId() == selectedItem.getId()) {
@@ -139,14 +145,20 @@ public class CategoryDetailsController {
 			userMessage.setText("Please click on a row to select which item to delete");
 		}
     }
-
+	
+	/**
+	 * when edit item button is clicked the selected items data will populate in the field to edit 
+	 * @param event click event
+	 */
 	@FXML
 	void editItem(ActionEvent event) {
+		/*
+		 *  if else nest: outer nest makes sure a row is selected within the table
+		 *  	inner if else: checks what instance the item is of to set the choice box
+		 */	
 		ExpenseItem selectedItem = (ExpenseItem) itemsTable.getData();
 		if (!utilities.isNull(selectedItem)) {
-			itemNameTextField.setText(selectedItem.getName());
-			itemPriceTextField.setText(selectedItem.getPrice() + "");
-			selectedItemId.setText(selectedItem.getId() + "");
+			setLabels(selectedItem);
 			if (selectedItem instanceof OneTimeItem) {
 				paymentTypeChoiceBox.setValue("One Time");
 			} else if (selectedItem instanceof WeeklyItem) {
@@ -158,9 +170,18 @@ public class CategoryDetailsController {
 			userMessage.setText("Please click on a row to select which item to edit");
 		}
 	}
-
+	
+	/**
+	 * controls the save button on the screen to save item edits
+	 * checks all fields are filled and number entry is valid
+	 * @param event click event
+	 */
 	@FXML
 	void saveItemEdit(ActionEvent event) {
+		/*
+		 *  if else nest: outer nest makes sure all user entries have a value
+		 *  	inner if else: checks to make sure the number entry is a valid positive integer or double
+		 */	
 		if (!utilities.checkTextFieldEmpty(itemNameTextField) && !utilities.checkTextFieldEmpty(itemPriceTextField)
 				&& utilities.isStringChoiceboxSelected(paymentTypeChoiceBox)) {
 			String itemName = itemNameTextField.getText();
@@ -208,11 +229,17 @@ public class CategoryDetailsController {
 			userMessage.setText("Please enter all fields before saving the edits!");
 		}
 	}
-
+	
+	/**
+	 * clears all field and table selections
+	 * @param event click event
+	 */
 	@FXML
 	void cancelEdit(ActionEvent event) {
 		itemNameTextField.setText("");
 		itemPriceTextField.setText("");
 		paymentTypeChoiceBox.setValue("");
+		itemsTable.clearSelection();
+		
 	}
 }

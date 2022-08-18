@@ -4,7 +4,11 @@ import java.util.ArrayList;
 
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-
+/**
+ * Utility class use to check empty user entries, valid number and null objects
+ * @author yunwei
+ *
+ */
 public class Utility {
 
 	/**
@@ -68,11 +72,21 @@ public class Utility {
 		return validNumber;
 	}
 	
+	/**
+	 * checks to see if the TextField is empty
+	 * @param fieldToCheck the TextField to check
+	 * @return true if text field is empty
+	 */
 	@SuppressWarnings("exports")
 	public boolean checkTextFieldEmpty(TextField fieldToCheck) {
 		return fieldToCheck.getText().isBlank();
 	}
 	
+	/**
+	 * checks to see if the choice box has a choice selected
+	 * @param boxToCheck choice box to check
+	 * @return true if the choice box has been selected
+	 */
 	public boolean isStringChoiceboxSelected(ChoiceBox<String> boxToCheck) {
 		return boxToCheck.getValue() != null;
 	}

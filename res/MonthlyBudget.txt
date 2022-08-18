@@ -1,0 +1,20 @@
+=======================
+Budget category name: food
+=======================
+	Item name: chippy dippy	Item Price: 5.99,	Payment occurrence: Weekly,	Monthly Payment: 23.96
+	Item name: chippy dippy	Item Price: 5.99,	Payment occurrence: Weekly,	Monthly Payment: 23.96
+	Item name: carrots	Item Price: 2.79,	Payment occurrence: One Time,	Monthly Payment: 2.79
+	Total spending: 50.71
+	Max monthly budget: 400.0,	Budget left: 349.29,	Over budget: 0.0
+=======================
+Budget category name: clothes
+=======================
+	Item name: buckie hat	Item Price: 17.99,	Payment occurrence: One Time,	Monthly Payment: 17.99
+	Total spending: 17.99
+	Max monthly budget: 150.0,	Budget left: 132.01,	Over budget: 0.0
+=======================
+Budget category name: mortgage
+=======================
+	Item name: house	Item Price: 1000.0,	Payment occurrence: Bi-Weekly,	Monthly Payment: 2000.0
+	Total spending: 2000.0
+	Max monthly budget: 2000.0,	Budget left: 0.0,	Over budget: 0.0

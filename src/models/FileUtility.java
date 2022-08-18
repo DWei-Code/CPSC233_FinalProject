@@ -62,6 +62,7 @@ public class FileUtility {
 	 * @param dataFileLocation the file path to find the file to load objects from
 	 * @return ArrayList of BudgetCategory objects
 	 */
+	@SuppressWarnings("unchecked")
 	public ArrayList<BudgetCategory> loadSavedData(String dataFileLocation) {
 		ArrayList<BudgetCategory> savedData = null;
 		try {

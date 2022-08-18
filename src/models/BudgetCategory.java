@@ -3,12 +3,13 @@ package models;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import javafx.scene.control.Button;
-
+/**
+ * class is used to track all budget categories the user enters
+ * @author yunwei
+ *
+ */
 public class BudgetCategory implements Serializable{
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private double maxBudget;
 	private double budgetLeft;
@@ -16,6 +17,11 @@ public class BudgetCategory implements Serializable{
 	private String name;
 	private ArrayList<ExpenseItem> listOfItems = new ArrayList<>();
 	
+	/**
+	 * initializes the BudgetCategory object
+	 * @param name name of category
+	 * @param budget monthly set budget for this category
+	 */
 	public BudgetCategory(String name, double budget) {
 		this.name = name;
 		this.maxBudget = budget;
@@ -30,27 +36,51 @@ public class BudgetCategory implements Serializable{
 	public BudgetCategory(BudgetCategory toCopy) {
 		this.name = toCopy.name;
 	}
-
+	
+	/**
+	 * 
+	 * @return categories monthly set budget
+	 */
 	public double getMaxBudget() {
 		return maxBudget;
 	}
-
+	
+	/**
+	 * 
+	 * @return categories name
+	 */
 	public String getName() {
 		return name;
 	}
-
+	
+	/**
+	 * 
+	 * @return All items that belong to this category as an ArrayList
+	 */
 	public ArrayList<ExpenseItem> getListOfItems() {
 		return listOfItems;
 	}
-
+	
+	/**
+	 * 
+	 * @return categories available budget
+	 */
 	public double getBudgetLeft() {
 		return budgetLeft;
 	}
-
+	
+	/**
+	 * 
+	 * @return how over budget the user is for this category
+	 */
 	public double getOverBudget() {
 		return overBudget;
 	}
-
+	
+	/**
+	 * sets the monthly budget of the category
+	 * @param maxBudget the new budget
+	 */
 	public void setMaxBudget(double maxBudget) {
 		updateOtherBudgets(this.maxBudget, maxBudget);
 		this.maxBudget = maxBudget;
@@ -79,13 +109,23 @@ public class BudgetCategory implements Serializable{
 		}
 	}
 	
-
+	/**
+	 * sets the category name
+	 * @param name name of category
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
+	/**
+	 * updates the budget left and over budget variables based on item added
+	 * @param newItem item to add under this category
+	 * @return user message telling the user the budget update
+	 */
 	public String updateBudget(ExpenseItem newItem) {
 		String userMessage = "";
+		// if there is no more budget left, transfer the rest of the spending into overBudget
+		// else decrease the amount of budget left
 		if (budgetLeft - newItem.getMonthlyExpense() < 0) {
 			userMessage = String.format("Gone over buget by: %.02f.", Math.abs(budgetLeft - newItem.getMonthlyExpense()));
 			if (overBudget == 0.0) {
@@ -116,7 +156,10 @@ public class BudgetCategory implements Serializable{
 			overBudget -= beforeEdit.getMonthlyExpense();
 		}
 	}
-
+	
+	/**
+	 * To string to print a formatted legible layout of this categories information
+	 */
 	public String toString() {
 		double totalSpending = 0.0;
 		StringBuilder budgetCategoryString = new StringBuilder();
